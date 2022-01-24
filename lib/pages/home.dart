@@ -45,7 +45,7 @@ class HomeState extends State<Home> {
                           child: Container(
                               padding: EdgeInsets.fromLTRB(20, 35, 10, 0),
                               child: ElevatedButton(
-                                  onPressed: null,
+                                  onPressed: irParaEntrar,
                                   style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all(Colors.white), // background
                                       foregroundColor: MaterialStateProperty.all(Colors.white), // foreground

@@ -1,12 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'login.dart';
+import 'cadastro.dart';
+
 class Home extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => HomeState();
 }
 
 class HomeState extends State<Home> {
+  void irParaCadastro() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (BuildContext context) => Cadastro()));
+  }
+
+  void irParaEntrar() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (BuildContext context) => Login()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +74,7 @@ class HomeState extends State<Home> {
                           child: Container(
                               padding: EdgeInsets.fromLTRB(10, 35, 20, 0),
                               child: ElevatedButton(
-                                  onPressed: null,
+                                  onPressed: irParaCadastro,
                                   style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all(Colors.white), // background
                                       foregroundColor: MaterialStateProperty.all(Colors.white), // foreground

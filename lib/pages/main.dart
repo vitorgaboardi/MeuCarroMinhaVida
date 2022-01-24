@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'login.dart';
 import 'pesquisa.dart';
+import 'camera.dart';
+import 'profile.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -48,9 +50,9 @@ class _MainPage extends State<MainPage> {
       } else if (index == 1) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Search()));
-      } else if (index == 2) {
+      } else if (index == 4) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Login()));
+            MaterialPageRoute(builder: (BuildContext context) => Profile()));
       }
     });
   }

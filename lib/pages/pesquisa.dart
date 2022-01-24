@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'main.dart';
 import 'login.dart';
+import 'profile.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -48,9 +49,9 @@ class _Search extends State<Search> {
       } else if (index == 1) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Search()));
-      } else if (index == 2) {
+      } else if (index == 4) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Login()));
+            MaterialPageRoute(builder: (BuildContext context) => Profile()));
       }
     });
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'login.dart';
 import 'cadastro.dart';
+import 'camera.dart';
 
 class Home extends StatefulWidget {
   @override

@@ -47,7 +47,7 @@ class _MainPage extends State<MainPage> {
     ),
   ];
 
-  Future<void> _onItemTapped(int index) async {
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
 

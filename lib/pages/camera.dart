@@ -55,7 +55,7 @@ class CameraState extends State<Camera> {
     ),
   ];
 
-  Future<void> _onItemTapped(int index) async {
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
 
@@ -91,7 +91,6 @@ class CameraState extends State<Camera> {
 
   @override
   void dispose() {
-    // Dispose of the controller when the widget is disposed.
     _controller.dispose();
     super.dispose();
   }

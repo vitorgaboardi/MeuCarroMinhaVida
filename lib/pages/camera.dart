@@ -30,7 +30,7 @@ class CameraState extends State<Camera> {
   int _selectedIndex = 2;
 
   static const TextStyle optionStyle =
-    TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   static const List<Widget> _widgetOptions = <Widget>[
     Text(
@@ -66,8 +66,10 @@ class CameraState extends State<Camera> {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Search()));
       } else if (index == 2) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Camera(camera: camera)));
       } else if (index == 4) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Profile()));
@@ -84,7 +86,7 @@ class CameraState extends State<Camera> {
       camera = cameras.first;
     });
 
-    _controller = CameraController(widget.camera, ResolutionPreset.medium);
+    _controller = CameraController(widget.camera, ResolutionPreset.high);
 
     _initializeControllerFuture = _controller.initialize();
   }
@@ -100,7 +102,7 @@ class CameraState extends State<Camera> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Camera',
+          'Take a car Photo',
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.w800, fontSize: 30),
         ),
@@ -114,8 +116,18 @@ class CameraState extends State<Camera> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            // Trying to set camera at full screen:
+            var camera = _controller.value;
+            final size = MediaQuery.of(context).size;
+            var scale = size.aspectRatio * camera.aspectRatio;
+
+            // to prevent scaling down, invert the value
+            //if (scale < 1) scale = 1 / scale;
+
             // If the Future is complete, display the preview.
-            return CameraPreview(_controller);
+            return Transform.scale(
+                scale: scale * 1.05,
+                child: Center(child: CameraPreview(_controller)));
           } else {
             // Otherwise, display a loading indicator.
             return const Center(child: CircularProgressIndicator());
@@ -195,10 +207,18 @@ class DisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
+      appBar: AppBar(
+        title: const Text(
+          'Imagem',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w800, fontSize: 30),
+        ),
+        backgroundColor: Color.fromARGB(255, 162, 89, 255),
+        centerTitle: true,
+      ),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
+      body: Center(child: Image.file(File(imagePath))),
     );
   }
 }

@@ -43,7 +43,7 @@ class HomeState extends State<Home> {
               child: SizedBox(
                   height: 86,
                   child: Container(
-                      padding: EdgeInsets.fromLTRB(20, 35, 10, 0),
+                      padding: EdgeInsets.fromLTRB(20, 20, 10, 15),
                       child: ElevatedButton(
                           onPressed: irParaEntrar,
                           style: ButtonStyle(
@@ -67,7 +67,7 @@ class HomeState extends State<Home> {
               child: SizedBox(
                   height: 86,
                   child: Container(
-                      padding: EdgeInsets.fromLTRB(10, 35, 20, 0),
+                      padding: EdgeInsets.fromLTRB(10, 20, 20, 15),
                       child: ElevatedButton(
                         onPressed: irParaCadastro,
                         style: ButtonStyle(

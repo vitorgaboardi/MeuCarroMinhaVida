@@ -4,31 +4,14 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-Future<void> main() async {
-  // Ensure that plugin services are initialized so that `availableCameras()`
-  // can be called before `runApp()`
-  WidgetsFlutterBinding.ensureInitialized();
+import 'login.dart';
+import 'main.dart';
+import 'pesquisa.dart';
+import 'camera.dart';
+import 'profile.dart';
 
-  // Obtain a list of the available cameras on the device.
-  final cameras = await availableCameras();
-
-  // Get a specific camera from the list of available cameras.
-  final firstCamera = cameras.first;
-
-  runApp(
-    MaterialApp(
-      theme: ThemeData.dark(),
-      home: TakePictureScreen(
-        // Pass the appropriate camera to the TakePictureScreen widget.
-        camera: firstCamera,
-      ),
-    ),
-  );
-}
-
-// A screen that allows users to take a picture using a given camera.
-class TakePictureScreen extends StatefulWidget {
-  const TakePictureScreen({
+class Camera extends StatefulWidget {
+  const Camera({
     Key? key,
     required this.camera,
   }) : super(key: key);
@@ -36,26 +19,73 @@ class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
 
   @override
-  TakePictureScreenState createState() => TakePictureScreenState();
+  CameraState createState() => CameraState();
 }
 
-class TakePictureScreenState extends State<TakePictureScreen> {
+class CameraState extends State<Camera> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  late List<CameraDescription> cameras;
+  late CameraDescription camera;
+  int _selectedIndex = 2;
+
+  static const TextStyle optionStyle =
+    TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text(
+      'Index 0: Home',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 1: Search',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 2: Camera',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 3: Message',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 4: Profile',
+      style: optionStyle,
+    ),
+  ];
+
+  Future<void> _onItemTapped(int index) async {
+    setState(() {
+      _selectedIndex = index;
+
+      if (index == 0) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => MainPage()));
+      } else if (index == 1) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Search()));
+      } else if (index == 2) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera)));
+      } else if (index == 4) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Profile()));
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    // To display the current output from the Camera,
-    // create a CameraController.
-    _controller = CameraController(
-      // Get a specific camera from the list of available cameras.
-      widget.camera,
-      // Define the resolution to use.
-      ResolutionPreset.medium,
-    );
 
-    // Next, initialize the controller. This returns a Future.
+    availableCameras().then((availableCameras) {
+      cameras = availableCameras;
+      camera = cameras.first;
+    });
+
+    _controller = CameraController(widget.camera, ResolutionPreset.medium);
+
     _initializeControllerFuture = _controller.initialize();
   }
 
@@ -69,7 +99,15 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Take a picture')),
+      appBar: AppBar(
+        title: const Text(
+          'Camera',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w800, fontSize: 30),
+        ),
+        backgroundColor: Color.fromARGB(255, 162, 89, 255),
+        centerTitle: true,
+      ),
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
@@ -84,6 +122,35 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             return const Center(child: CircularProgressIndicator());
           }
         },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // This is all you need!
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: Colors.white,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera_alt),
+            label: 'Camera',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: 'Message',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
         // Provide an onPressed callback.

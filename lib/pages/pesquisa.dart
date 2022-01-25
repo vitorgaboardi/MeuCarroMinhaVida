@@ -1,7 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-import 'main.dart';
 import 'login.dart';
+import 'main.dart';
+import 'camera.dart';
 import 'profile.dart';
 
 class Search extends StatefulWidget {
@@ -12,7 +17,10 @@ class Search extends StatefulWidget {
 }
 
 class _Search extends State<Search> {
+  late List<CameraDescription> cameras;
+  late CameraDescription camera;
   int _selectedIndex = 1;
+
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
@@ -49,10 +57,22 @@ class _Search extends State<Search> {
       } else if (index == 1) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Search()));
+      } else if (index == 2) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera)));
       } else if (index == 4) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Profile()));
       }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    availableCameras().then((availableCameras) {
+      cameras = availableCameras;
+      camera = cameras.first;
     });
   }
 

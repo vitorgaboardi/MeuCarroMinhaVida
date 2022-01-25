@@ -1,10 +1,14 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-import 'pesquisa.dart';
+import 'home.dart';
 import 'main.dart';
+import 'pesquisa.dart';
 import 'camera.dart';
 import 'registro_carro.dart';
-import 'home.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -14,7 +18,10 @@ class Profile extends StatefulWidget {
 }
 
 class _Profile extends State<Profile> {
+  late List<CameraDescription> cameras;
+  late CameraDescription camera;
   int _selectedIndex = 4;
+
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
@@ -51,6 +58,9 @@ class _Profile extends State<Profile> {
       } else if (index == 1) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Search()));
+      } else if (index == 2) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera)));
       } else if (index == 4) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Profile()));
@@ -66,6 +76,15 @@ class _Profile extends State<Profile> {
   void _home() {
     Navigator.push(
         context, MaterialPageRoute(builder: (BuildContext context) => Home()));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    availableCameras().then((availableCameras) {
+      cameras = availableCameras;
+      camera = cameras.first;
+    });
   }
 
   @override

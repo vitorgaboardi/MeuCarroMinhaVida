@@ -19,7 +19,7 @@ class LoginState extends State<Login> {
     senhaController.clear();
   }
 
-  void cadastrar() async {
+  void entrar() async {
     //var url = Uri.parse('https://wadsonpontes.com/cadastro');
     //var response = await http.post(url,
     //  body: {'email': emailController.text, 'senha': senhaController.text});
@@ -103,7 +103,7 @@ class LoginState extends State<Login> {
                       child: Container(
                           padding: EdgeInsets.fromLTRB(10, 35, 20, 0),
                           child: ElevatedButton(
-                            onPressed: cadastrar,
+                            onPressed: entrar,
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.white), // background

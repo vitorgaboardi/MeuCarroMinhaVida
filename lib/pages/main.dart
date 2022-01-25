@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 import 'login.dart';
@@ -13,7 +17,10 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
+  late List<CameraDescription> cameras;
+  late CameraDescription camera;
   int _selectedIndex = 0;
+
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
@@ -40,7 +47,7 @@ class _MainPage extends State<MainPage> {
     ),
   ];
 
-  void _onItemTapped(int index) {
+  Future<void> _onItemTapped(int index) async {
     setState(() {
       _selectedIndex = index;
 
@@ -50,10 +57,22 @@ class _MainPage extends State<MainPage> {
       } else if (index == 1) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Search()));
+      } else if (index == 2) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera)));
       } else if (index == 4) {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Profile()));
       }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    availableCameras().then((availableCameras) {
+      cameras = availableCameras;
+      camera = cameras.first;
     });
   }
 

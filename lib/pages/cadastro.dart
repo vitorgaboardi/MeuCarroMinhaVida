@@ -10,6 +10,7 @@ class Cadastro extends StatefulWidget {
 }
 
 class CadastroState extends State<Cadastro> {
+  final formGlobalKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
   TextEditingController senha2Controller = TextEditingController();
@@ -21,18 +22,39 @@ class CadastroState extends State<Cadastro> {
   }
 
   void cadastrar() async {
+    if (emailController.text.length > 2) {
+
+    }
+
     var url = Uri.parse('https://wadsonpontes.com/cadastro');
     var response = await http.post(url,
         body: {'email': emailController.text, 'senha': senhaController.text});
 
     print(response.body);
 
-    Navigator.push(
-        context, MaterialPageRoute(builder: (BuildContext context) => Home()));
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (BuildContext context) => Cadastro2(email:email, senha:senha)));
   }
 
   void voltar() {
     Navigator.pop(context);
+  }
+
+  bool eEmailValido(email) {
+    final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    return emailRegExp.hasMatch(email);
+  }
+
+  bool eSenhaValida(senha) {
+    final passwordRegExp = new RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+    return passwordRegExp.hasMatch(senha);
+  }
+
+  bool eSenhasCorrespondem(senha) {
+    if (senhaController.text != senha2Controller.text) {
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -48,107 +70,100 @@ class CadastroState extends State<Cadastro> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-            child: Column(
-          children: [
-            /*
-                Container(
-                    color: Color.fromARGB(255, 162, 89, 255),
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(20, 50, 20, 30),
-                    child: Text(
-                      'Registrar',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 30),
-                    )),
-                    */
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 50, 20, 10),
-              child: TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'E-mail',
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: TextField(
-                obscureText: true,
-                controller: senhaController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Senha',
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: TextField(
-                obscureText: true,
-                controller: senha2Controller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Confirmação de Senha',
-                ),
-              ),
-            ),
-            Row(children: [
-              Expanded(
-                  child: SizedBox(
-                      height: 86,
-                      child: Container(
-                          padding: EdgeInsets.fromLTRB(20, 35, 10, 0),
-                          child: ElevatedButton(
-                              onPressed: voltar,
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.white), // background
-                                  foregroundColor: MaterialStateProperty.all(
-                                      Colors.white), // foreground
-                                  shape: MaterialStateProperty.all(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                          side: BorderSide(
-                                              color: Color.fromARGB(
-                                                  255, 162, 89, 255))))),
-                              child: Text('VOLTAR',
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 162, 89, 255),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                  )))))),
-              Expanded(
-                  child: SizedBox(
-                      height: 86,
-                      child: Container(
-                          padding: EdgeInsets.fromLTRB(10, 35, 20, 0),
-                          child: ElevatedButton(
-                            onPressed: cadastrar,
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.white), // background
-                                foregroundColor: MaterialStateProperty.all(
-                                    Colors.white), // foreground
-                                shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        side: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 162, 89, 255))))),
-                            child: Text('REGISTRAR',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 162, 89, 255),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
-                                )),
-                          ))))
-            ])
-          ],
-        )));
+            child: Form(
+                key: formGlobalKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 50, 20, 10),
+                      child: TextFormField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'E-mail',
+                        ),
+                        validator: (email) {
+                          if (eEmailValido(email)) return null;
+                          else
+                            return 'Digite um endereço de e-mail válido';
+                        },
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      child: TextFormField(
+                        obscureText: true,
+                        controller: senhaController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Senha',
+                        ),
+                        validator: (email) {
+                          if (eSenhaValida(email)) return null;
+                          else
+                            return 'Digite uma senha válida';
+                        },
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      child: TextFormField(
+                        obscureText: true,
+                        controller: senha2Controller,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Confirmar Senha',
+                        ),
+                        validator: (email) {
+                          if (eSenhasCorrespondem(email)) return null;
+                          else
+                            return 'As senhas não correspondem';
+                        },
+                      ),
+                    ),
+                    Row(
+                        children: [
+                          Expanded(
+                              child: SizedBox(
+                                  height: 86,
+                                  child: Container(
+                                      padding: EdgeInsets.fromLTRB(20, 35, 20, 0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          if (formGlobalKey.currentState!.validate()) {
+                                            // use the email provided here
+                                          }
+                                        },
+                                        style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all(
+                                                Colors.white), // background
+                                            foregroundColor: MaterialStateProperty.all(
+                                                Colors.white), // foreground
+                                            shape: MaterialStateProperty.all(
+                                                RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(5.0),
+                                                    side: BorderSide(
+                                                        color: Color.fromARGB(
+                                                            255, 162, 89, 255))))),
+                                        child: Text('PRÓXIMO',
+                                            style: TextStyle(
+                                              color: Color.fromARGB(255, 162, 89, 255),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w900,
+                                            )),
+                                      )
+                                  )
+                              )
+                          )
+                        ]
+                    )
+                  ],
+                )
+            )
+        )
+    );
   }
 }

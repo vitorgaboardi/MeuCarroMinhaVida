@@ -137,8 +137,8 @@ class CadastroState extends State<Cadastro> {
                           border: OutlineInputBorder(),
                           labelText: 'Senha',
                         ),
-                        validator: (email) {
-                          if (eSenhaValida(email))
+                        validator: (senha) {
+                          if (eSenhaValida(senha))
                             return null;
                           else
                             return 'Senha deve conter 8 dígitos (A-Z a-z 0-9 !#@*&)';
@@ -155,8 +155,8 @@ class CadastroState extends State<Cadastro> {
                           border: OutlineInputBorder(),
                           labelText: 'Confirmar Senha',
                         ),
-                        validator: (email) {
-                          if (eSenhasCorrespondem(email))
+                        validator: (senha) {
+                          if (eSenhasCorrespondem(senha))
                             return null;
                           else
                             return 'As senhas não correspondem';

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'home.dart';
 import 'main.dart';
@@ -24,7 +25,7 @@ class RegistroCarroState extends State<RegistroCarro> {
   }) : super();
 
   final dados;
-
+  String erroDaApi = '';
   TextEditingController placaController = TextEditingController();
   TextEditingController modeloController = TextEditingController();
   TextEditingController corController = TextEditingController();
@@ -38,14 +39,56 @@ class RegistroCarroState extends State<RegistroCarro> {
   }
 
   void cadastrar() async {
-    //var url = Uri.parse('https://wadsonpontes.com/cadastro');
-    //var response = await http.post(url,
-    //  body: {'email': emailController.text, 'senha': senhaController.text});
+    setState(() {
+      erroDaApi = '';
+    });
 
-    //print(response.body);
+    if (true /* formGlobalKey.currentState!.validate() */) {
+      var placa = placaController.text;
+      var modelo = modeloController.text;
+      var cor = corController.text;
+      var ano = anoController.text;
 
-    Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
+      try {
+        var url = Uri.parse('http://wadsonpontes.com/cadastrocarro');
+        var res = await http.post(url, body: {
+          'email': dados['email'],
+          'senha': dados['senha'],
+          'placa': placa,
+          'modelo': modelo,
+          'cor': cor,
+          'ano': ano
+        });
+
+        if (res.statusCode == 200) {
+          var r = jsonDecode(res.body) as Map;
+
+          if (r['status'] == 'success') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sucesso!')),
+            );
+
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
+          }
+          else {
+            setState(() {
+              erroDaApi = r['error'];
+            });
+          }
+        }
+        else {
+          setState(() {
+            erroDaApi = 'Erro de comunicação com o servidor';
+          });
+        }
+      }
+      catch (e) {
+        setState(() {
+          erroDaApi = 'Ocorreu um erro inesperado';
+        });
+      }
+    }
   }
 
   void voltar() {
@@ -81,7 +124,6 @@ class RegistroCarroState extends State<RegistroCarro> {
             Container(
               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
-                obscureText: true,
                 controller: modeloController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -92,7 +134,6 @@ class RegistroCarroState extends State<RegistroCarro> {
             Container(
               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
-                obscureText: true,
                 controller: corController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -103,7 +144,6 @@ class RegistroCarroState extends State<RegistroCarro> {
             Container(
               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
-                obscureText: true,
                 controller: anoController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -114,9 +154,9 @@ class RegistroCarroState extends State<RegistroCarro> {
             Row(children: [
               Expanded(
                   child: SizedBox(
-                      height: 86,
+                      height: 100,
                       child: Container(
-                          padding: EdgeInsets.fromLTRB(20, 35, 10, 0),
+                          padding: EdgeInsets.fromLTRB(20, 35, 10, 10),
                           child: ElevatedButton(
                               onPressed: voltar,
                               style: ButtonStyle(
@@ -139,9 +179,9 @@ class RegistroCarroState extends State<RegistroCarro> {
                                   )))))),
               Expanded(
                   child: SizedBox(
-                      height: 86,
+                      height: 100,
                       child: Container(
-                          padding: EdgeInsets.fromLTRB(10, 35, 20, 0),
+                          padding: EdgeInsets.fromLTRB(10, 35, 20, 10),
                           child: ElevatedButton(
                             onPressed: cadastrar,
                             style: ButtonStyle(
@@ -163,7 +203,14 @@ class RegistroCarroState extends State<RegistroCarro> {
                                   fontWeight: FontWeight.w900,
                                 )),
                           ))))
-            ])
+            ]),
+            Text(erroDaApi,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+            )
           ],
         )));
   }

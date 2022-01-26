@@ -9,23 +9,19 @@ import 'main.dart';
 import 'pesquisa.dart';
 import 'camera.dart';
 import 'registro_carro.dart';
+import 'meus_carros.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({
-    Key? key,
-    required this.dados
-  }) : super(key: key);
+  const Profile({Key? key, required this.dados}) : super(key: key);
 
   final dados;
 
   @override
-  State<Profile> createState() => _Profile(dados:dados);
+  State<Profile> createState() => _Profile(dados: dados);
 }
 
 class _Profile extends State<Profile> {
-  _Profile({
-    required this.dados
-  }) : super();
+  _Profile({required this.dados}) : super();
 
   final dados;
   String nomeUsuario = '';
@@ -64,24 +60,42 @@ class _Profile extends State<Profile> {
       _selectedIndex = index;
 
       if (index == 0) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => MainPage(dados:dados)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => MainPage(dados: dados)));
       } else if (index == 1) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Search(dados:dados)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Search(dados: dados)));
       } else if (index == 2) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera, dados:dados)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    Camera(camera: camera, dados: dados)));
       } else if (index == 4) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Profile(dados: dados)));
       }
     });
   }
 
+  void _meusCarros() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => MeusCarros(dados: dados)));
+  }
+
   void _cadastrarCarro() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => RegistroCarro(dados:dados)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => RegistroCarro(dados: dados)));
   }
 
   void _home() {
@@ -148,7 +162,7 @@ class _Profile extends State<Profile> {
                     child: Container(
                         padding: EdgeInsets.fromLTRB(20, 35, 20, 0),
                         child: ElevatedButton(
-                            onPressed: null,
+                            onPressed: _meusCarros,
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.white), // background

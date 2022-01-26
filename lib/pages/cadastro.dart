@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-import 'home.dart';
+import 'cadastro2.dart';
 
 class Cadastro extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class Cadastro extends StatefulWidget {
 }
 
 class CadastroState extends State<Cadastro> {
+  String erroDaApi = '';
   final formGlobalKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
@@ -22,18 +24,48 @@ class CadastroState extends State<Cadastro> {
   }
 
   void cadastrar() async {
-    if (emailController.text.length > 2) {
+    setState(() {
+      erroDaApi = '';
+    });
 
+    if (formGlobalKey.currentState!.validate()) {
+      var email = emailController.text;
+      var senha = senhaController.text;
+
+      try {
+        var url = Uri.parse('http://wadsonpontes.com/cadastro');
+        var res = await http.post(url, body: {'email': email, 'senha': senha});
+
+        if (res.statusCode == 200) {
+          var r = jsonDecode(res.body) as Map;
+
+          if (r['status'] == 'success') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sucesso!')),
+            );
+
+            Navigator.push(
+                context, MaterialPageRoute(builder: (BuildContext context) =>
+                Cadastro2(email: email, senha: senha)));
+          }
+          else {
+            setState(() {
+              erroDaApi = r['error'];
+            });
+          }
+        }
+        else {
+          setState(() {
+            erroDaApi = 'Erro de comunicação com o servidor';
+          });
+        }
+      }
+      catch (e) {
+        setState(() {
+          erroDaApi = 'Ocorreu um erro inesperado';
+        });
+      }
     }
-
-    var url = Uri.parse('https://wadsonpontes.com/cadastro');
-    var response = await http.post(url,
-        body: {'email': emailController.text, 'senha': senhaController.text});
-
-    print(response.body);
-
-    // Navigator.push(
-    //     context, MaterialPageRoute(builder: (BuildContext context) => Cadastro2(email:email, senha:senha)));
   }
 
   void voltar() {
@@ -80,12 +112,16 @@ class CadastroState extends State<Cadastro> {
                       padding: EdgeInsets.fromLTRB(20, 50, 20, 10),
                       child: TextFormField(
                         controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        maxLength: 255,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'E-mail',
+                          counterText: '',
                         ),
                         validator: (email) {
-                          if (eEmailValido(email)) return null;
+                          if (eEmailValido(email))
+                            return null;
                           else
                             return 'Digite um endereço de e-mail válido';
                         },
@@ -96,14 +132,16 @@ class CadastroState extends State<Cadastro> {
                       child: TextFormField(
                         obscureText: true,
                         controller: senhaController,
+                        keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Senha',
                         ),
                         validator: (email) {
-                          if (eSenhaValida(email)) return null;
+                          if (eSenhaValida(email))
+                            return null;
                           else
-                            return 'Digite uma senha válida';
+                            return 'Senha deve conter 8 dígitos (A-Z a-z 0-9 !#@*&)';
                         },
                       ),
                     ),
@@ -112,12 +150,14 @@ class CadastroState extends State<Cadastro> {
                       child: TextFormField(
                         obscureText: true,
                         controller: senha2Controller,
+                        keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Confirmar Senha',
                         ),
                         validator: (email) {
-                          if (eSenhasCorrespondem(email)) return null;
+                          if (eSenhasCorrespondem(email))
+                            return null;
                           else
                             return 'As senhas não correspondem';
                         },
@@ -127,15 +167,11 @@ class CadastroState extends State<Cadastro> {
                         children: [
                           Expanded(
                               child: SizedBox(
-                                  height: 86,
+                                  height: 100,
                                   child: Container(
-                                      padding: EdgeInsets.fromLTRB(20, 35, 20, 0),
+                                      padding: EdgeInsets.fromLTRB(20, 35, 20, 10),
                                       child: ElevatedButton(
-                                        onPressed: () {
-                                          if (formGlobalKey.currentState!.validate()) {
-                                            // use the email provided here
-                                          }
-                                        },
+                                        onPressed: cadastrar,
                                         style: ButtonStyle(
                                             backgroundColor: MaterialStateProperty.all(
                                                 Colors.white), // background
@@ -157,8 +193,15 @@ class CadastroState extends State<Cadastro> {
                                       )
                                   )
                               )
-                          )
+                          ),
                         ]
+                    ),
+                    Text(erroDaApi,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
                     )
                   ],
                 )

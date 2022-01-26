@@ -42,7 +42,7 @@ class Cadastro2State extends State<Cadastro2> {
 
     if (formGlobalKey.currentState!.validate()) {
       try {
-        var url = Uri.parse('https://wadsonpontes.comss/cadastro2');
+        var url = Uri.parse('http://wadsonpontes.com/cadastro2');
         var res = await http.post(url, body: {
           'email': email,
           'senha': senha,
@@ -238,7 +238,7 @@ class Cadastro2State extends State<Cadastro2> {
                               child: SizedBox(
                                   height: 100,
                                   child: Container(
-                                      padding: EdgeInsets.fromLTRB(20, 35, 20, 20),
+                                      padding: EdgeInsets.fromLTRB(20, 35, 20, 10),
                                       child: ElevatedButton(
                                         onPressed: cadastrar,
                                         style: ButtonStyle(

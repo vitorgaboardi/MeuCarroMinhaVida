@@ -15,15 +15,22 @@ class Camera extends StatefulWidget {
   const Camera({
     Key? key,
     required this.camera,
+    required this.dados
   }) : super(key: key);
 
+  final dados;
   final CameraDescription camera;
 
   @override
-  CameraState createState() => CameraState();
+  CameraState createState() => CameraState(dados:dados);
 }
 
 class CameraState extends State<Camera> {
+  CameraState({
+    required this.dados
+  }) : super();
+
+  final dados;
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late List<CameraDescription> cameras;
@@ -65,18 +72,18 @@ class CameraState extends State<Camera> {
 
       if (index == 0) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => MainPage()));
+            MaterialPageRoute(builder: (BuildContext context) => MainPage(dados:dados)));
       } else if (index == 1) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Search()));
+            MaterialPageRoute(builder: (BuildContext context) => Search(dados:dados)));
       } else if (index == 2) {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => Camera(camera: camera)));
+                builder: (BuildContext context) => Camera(camera: camera, dados:dados)));
       } else if (index == 4) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Profile()));
+            MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
       }
     });
   }

@@ -11,13 +11,24 @@ import 'camera.dart';
 import 'registro_carro.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({
+    Key? key,
+    required this.dados
+  }) : super(key: key);
+
+  final dados;
 
   @override
-  State<Profile> createState() => _Profile();
+  State<Profile> createState() => _Profile(dados:dados);
 }
 
 class _Profile extends State<Profile> {
+  _Profile({
+    required this.dados
+  }) : super();
+
+  final dados;
+  String nomeUsuario = '';
   late List<CameraDescription> cameras;
   late CameraDescription camera;
   int _selectedIndex = 4;
@@ -54,23 +65,23 @@ class _Profile extends State<Profile> {
 
       if (index == 0) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => MainPage()));
+            MaterialPageRoute(builder: (BuildContext context) => MainPage(dados:dados)));
       } else if (index == 1) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Search()));
+            MaterialPageRoute(builder: (BuildContext context) => Search(dados:dados)));
       } else if (index == 2) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera)));
+            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera, dados:dados)));
       } else if (index == 4) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Profile()));
+            MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
       }
     });
   }
 
   void _cadastrarCarro() {
     Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => RegistroCarro()));
+        MaterialPageRoute(builder: (BuildContext context) => RegistroCarro(dados:dados)));
   }
 
   void _home() {
@@ -84,6 +95,10 @@ class _Profile extends State<Profile> {
     availableCameras().then((availableCameras) {
       cameras = availableCameras;
       camera = cameras.first;
+    });
+
+    setState(() {
+      nomeUsuario = dados['nome'];
     });
   }
 
@@ -117,7 +132,7 @@ class _Profile extends State<Profile> {
                         image: NetworkImage(
                             "https://yt3.ggpht.com/ytc/AKedOLTgBzfv-ZnI70opiHwDPwuIue70fFRe3QZDGZ42hg=s900-c-k-c0x00ffffff-no-rj")))),
             SizedBox(height: 10),
-            Text("VITOR SANTOS",
+            Text(nomeUsuario.toUpperCase(),
                 style: TextStyle(
                   color: Color.fromARGB(255, 162, 89, 255),
                   fontSize: 16,

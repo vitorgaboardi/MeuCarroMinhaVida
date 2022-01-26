@@ -10,13 +10,23 @@ import 'camera.dart';
 import 'profile.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({
+    Key? key,
+    required this.dados
+  }) : super(key: key);
+
+  final dados;
 
   @override
-  State<MainPage> createState() => _MainPage();
+  State<MainPage> createState() => _MainPage(dados:dados);
 }
 
 class _MainPage extends State<MainPage> {
+  _MainPage({
+    required this.dados
+  }) : super();
+
+  final dados;
   late List<CameraDescription> cameras;
   late CameraDescription camera;
   int _selectedIndex = 0;
@@ -53,16 +63,16 @@ class _MainPage extends State<MainPage> {
 
       if (index == 0) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => MainPage()));
+            MaterialPageRoute(builder: (BuildContext context) => MainPage(dados:dados)));
       } else if (index == 1) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Search()));
+            MaterialPageRoute(builder: (BuildContext context) => Search(dados:dados)));
       } else if (index == 2) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera)));
+            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera, dados:dados)));
       } else if (index == 4) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Profile()));
+            MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
       }
     });
   }

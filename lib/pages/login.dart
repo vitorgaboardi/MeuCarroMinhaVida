@@ -44,7 +44,7 @@ class LoginState extends State<Login> {
             );
 
             Navigator.push(context,
-                MaterialPageRoute(builder: (BuildContext context) => MainPage()));
+                MaterialPageRoute(builder: (BuildContext context) => MainPage(dados:r)));
           }
           else {
             setState(() {

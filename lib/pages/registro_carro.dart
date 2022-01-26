@@ -7,11 +7,24 @@ import 'main.dart';
 import 'profile.dart';
 
 class RegistroCarro extends StatefulWidget {
+  const RegistroCarro({
+    Key? key,
+    required this.dados
+  }) : super(key: key);
+
+  final dados;
+
   @override
-  State<StatefulWidget> createState() => RegistroCarroState();
+  State<StatefulWidget> createState() => RegistroCarroState(dados:dados);
 }
 
 class RegistroCarroState extends State<RegistroCarro> {
+  RegistroCarroState({
+    required this.dados
+  }) : super();
+
+  final dados;
+
   TextEditingController placaController = TextEditingController();
   TextEditingController modeloController = TextEditingController();
   TextEditingController corController = TextEditingController();
@@ -32,12 +45,12 @@ class RegistroCarroState extends State<RegistroCarro> {
     //print(response.body);
 
     Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => Profile()));
+        MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
   }
 
   void voltar() {
     Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => Profile()));
+        MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
   }
 
   @override

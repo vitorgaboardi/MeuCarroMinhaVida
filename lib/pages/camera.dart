@@ -3,11 +3,12 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
-import 'login.dart';
 import 'main.dart';
 import 'pesquisa.dart';
-import 'camera.dart';
 import 'profile.dart';
 
 class Camera extends StatefulWidget {
@@ -28,6 +29,9 @@ class CameraState extends State<Camera> {
   late List<CameraDescription> cameras;
   late CameraDescription camera;
   int _selectedIndex = 2;
+
+  final ImagePicker _picker = ImagePicker();
+  XFile? image;
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -77,6 +81,16 @@ class CameraState extends State<Camera> {
     });
   }
 
+  void filePicker() async {
+    final XFile? selectedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
+    print(selectedImage!.path);
+
+    setState(() {
+      image = selectedImage;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -96,6 +110,17 @@ class CameraState extends State<Camera> {
     _controller.dispose();
     super.dispose();
   }
+
+  /*
+  void _openGallery(BuildContext context) async {
+    final pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+    );
+
+    setState(() {
+      imageFile = pickedFile!;
+    });
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -163,36 +188,67 @@ class CameraState extends State<Camera> {
         selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
-      floatingActionButton: FloatingActionButton(
-        // Provide an onPressed callback.
-        onPressed: () async {
-          // Take the Picture in a try / catch block. If anything goes wrong,
-          // catch the error.
-          try {
-            // Ensure that the camera is initialized.
-            await _initializeControllerFuture;
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () async {
+                  final XFile? image =
+                      await _picker.pickImage(source: ImageSource.gallery);
+                  print(image!.path);
 
-            // Attempt to take a picture and get the file `image`
-            // where it was saved.
-            final image = await _controller.takePicture();
-
-            // If the picture was taken, display it on a new screen.
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
-                  imagePath: image.path,
-                ),
+                  // If the picture was taken, display it on a new screen.
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => DisplayPictureScreen(
+                        // Pass the automatically generated path to
+                        // the DisplayPictureScreen widget.
+                        imagePath: image.path,
+                      ),
+                    ),
+                  );
+                },
+                child: Icon(Icons.library_add),
+                backgroundColor: Color.fromARGB(255, 162, 89, 255),
+                heroTag: "btn1",
               ),
-            );
-          } catch (e) {
-            // If an error occurs, log the error to the console.
-            print(e);
-          }
-        },
-        child: const Icon(Icons.camera_alt),
+              FloatingActionButton(
+                // Provide an onPressed callback.
+                onPressed: () async {
+                  // Take the Picture in a try / catch block. If anything goes wrong,
+                  // catch the error.
+                  try {
+                    // Ensure that the camera is initialized.
+                    await _initializeControllerFuture;
+
+                    // Attempt to take a picture and get the file `image`
+                    // where it was saved.
+                    final image = await _controller.takePicture();
+
+                    // If the picture was taken, display it on a new screen.
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => DisplayPictureScreen(
+                          // Pass the automatically generated path to
+                          // the DisplayPictureScreen widget.
+                          imagePath: image.path,
+                        ),
+                      ),
+                    );
+                  } catch (e) {
+                    // If an error occurs, log the error to the console.
+                    print(e);
+                  }
+                },
+                child: const Icon(Icons.camera_alt),
+                backgroundColor: Color.fromARGB(255, 162, 89, 255),
+                heroTag: "btn2",
+              ),
+            ]),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
@@ -203,6 +259,29 @@ class DisplayPictureScreen extends StatelessWidget {
 
   const DisplayPictureScreen({Key? key, required this.imagePath})
       : super(key: key);
+
+  // fazer a requisicao para descobrir a placa
+  void getPlate() async {
+    var url = Uri.parse("http://alpr.imd.ufrn.br/lpr/frame");
+    Map<String, String> headers = {
+      'Authorization': 'Api-Key 3evA1njZ.72wf1El72h74k2vGi1g6u6JkdgqKgiWb'
+    };
+
+    // falta resolver a parte do certificado
+
+    var request = new http.MultipartRequest("POST", url);
+    request.headers.addAll(headers);
+    request.files.add(new http.MultipartFile.fromBytes(
+        'image', await File.fromUri(Uri.parse(imagePath)).readAsBytes(),
+        contentType: new MediaType('image', 'jpeg')));
+
+    request.send().then((response) {
+      if (response.statusCode == 200)
+        print("Uploaded!");
+      else
+        print(response.statusCode);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -219,6 +298,11 @@ class DisplayPictureScreen extends StatelessWidget {
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
       body: Center(child: Image.file(File(imagePath))),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getPlate,
+        child: Icon(Icons.check),
+        backgroundColor: Color.fromARGB(255, 162, 89, 255),
+      ),
     );
   }
 }

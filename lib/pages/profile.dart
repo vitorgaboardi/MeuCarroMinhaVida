@@ -228,7 +228,7 @@ class _Profile extends State<Profile> {
                 child: SizedBox(
                     height: 86,
                     child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 35, 20, 0),
+                        padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
                         child: ElevatedButton(
                             onPressed: _meusCarros,
                             style: ButtonStyle(
@@ -255,9 +255,9 @@ class _Profile extends State<Profile> {
           children: [
             Expanded(
                 child: SizedBox(
-                    height: 86,
+                    height: 76,
                     child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 35, 20, 0),
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                         child: ElevatedButton(
                             onPressed: _cadastrarCarro,
                             style: ButtonStyle(
@@ -284,9 +284,9 @@ class _Profile extends State<Profile> {
           children: [
             Expanded(
                 child: SizedBox(
-                    height: 86,
+                    height: 76,
                     child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 35, 20, 0),
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                         child: ElevatedButton(
                             onPressed: _home,
                             style: ButtonStyle(

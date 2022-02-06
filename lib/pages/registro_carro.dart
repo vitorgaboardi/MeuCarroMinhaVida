@@ -1,28 +1,26 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
 
-import 'home.dart';
-import 'main.dart';
 import 'profile.dart';
 
 class RegistroCarro extends StatefulWidget {
-  const RegistroCarro({
-    Key? key,
-    required this.dados
-  }) : super(key: key);
+  const RegistroCarro({Key? key, required this.dados}) : super(key: key);
 
   final dados;
 
   @override
-  State<StatefulWidget> createState() => RegistroCarroState(dados:dados);
+  State<StatefulWidget> createState() => RegistroCarroState(dados: dados);
 }
 
 class RegistroCarroState extends State<RegistroCarro> {
-  RegistroCarroState({
-    required this.dados
-  }) : super();
+  RegistroCarroState({required this.dados}) : super();
 
   final dados;
   String erroDaApi = '';
@@ -30,6 +28,8 @@ class RegistroCarroState extends State<RegistroCarro> {
   TextEditingController modeloController = TextEditingController();
   TextEditingController corController = TextEditingController();
   TextEditingController anoController = TextEditingController();
+
+  File image = new File('');
 
   void resetarCampos() {
     placaController.clear();
@@ -68,22 +68,21 @@ class RegistroCarroState extends State<RegistroCarro> {
               const SnackBar(content: Text('Sucesso!')),
             );
 
-            Navigator.push(context,
-                MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
-          }
-          else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => Profile(dados: dados)));
+          } else {
             setState(() {
               erroDaApi = r['error'];
             });
           }
-        }
-        else {
+        } else {
           setState(() {
             erroDaApi = 'Erro de comunicação com o servidor';
           });
         }
-      }
-      catch (e) {
+      } catch (e) {
         setState(() {
           erroDaApi = 'Ocorreu um erro inesperado';
         });
@@ -92,8 +91,59 @@ class RegistroCarroState extends State<RegistroCarro> {
   }
 
   void voltar() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => Profile(dados: dados)));
+  }
+
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() {
+        this.image = imageTemporary;
+      });
+      print(image.path);
+      // essa deve ser a imagem do perfil que deve ser salva! Depois, o perfil deve mostrar essa imagem!
+      // dados['fotoPerfil'] = this.image // algo desta forma...
+    } on PlatformException catch (e) {
+      print('Falha ao escolher imagem: $e');
+    }
+  }
+
+  Icon _selectIcon() {
+    if (image.path == '') return Icon(Icons.camera_alt);
+    return Icon(Icons.check_circle_sharp, color: Colors.green);
+  }
+
+  void _imagePress(context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+              child: Wrap(
+            children: [
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.camera_alt),
+                  title: Text('Câmera'),
+                  onTap: () => pickImage(ImageSource.camera),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.collections),
+                  title: Text('Galeria'),
+                  onTap: () => pickImage(ImageSource.gallery),
+                ),
+              ),
+            ],
+          ));
+        });
   }
 
   @override
@@ -110,9 +160,51 @@ class RegistroCarroState extends State<RegistroCarro> {
         ),
         body: SingleChildScrollView(
             child: Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: SizedBox(
+                        height: 86,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          fit: StackFit.expand,
+                          children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                                child: ElevatedButton(
+                                    onPressed: () => _imagePress(context),
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                                side: BorderSide(
+                                                    color: Color.fromARGB(
+                                                        255, 162, 89, 255))))),
+                                    child: Text('Imagem',
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 162, 89, 255),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w900,
+                                        )))),
+                            Positioned(
+                                right: 20.0, bottom: 10.0, child: _selectIcon())
+                          ],
+                        )))
+              ],
+            ),
             Container(
-              padding: EdgeInsets.fromLTRB(20, 50, 20, 10),
+              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
                 controller: placaController,
                 decoration: InputDecoration(
@@ -154,9 +246,9 @@ class RegistroCarroState extends State<RegistroCarro> {
             Row(children: [
               Expanded(
                   child: SizedBox(
-                      height: 100,
+                      height: 86,
                       child: Container(
-                          padding: EdgeInsets.fromLTRB(20, 35, 10, 10),
+                          padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
                           child: ElevatedButton(
                               onPressed: voltar,
                               style: ButtonStyle(
@@ -179,9 +271,9 @@ class RegistroCarroState extends State<RegistroCarro> {
                                   )))))),
               Expanded(
                   child: SizedBox(
-                      height: 100,
+                      height: 86,
                       child: Container(
-                          padding: EdgeInsets.fromLTRB(10, 35, 20, 10),
+                          padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
                           child: ElevatedButton(
                             onPressed: cadastrar,
                             style: ButtonStyle(
@@ -204,7 +296,8 @@ class RegistroCarroState extends State<RegistroCarro> {
                                 )),
                           ))))
             ]),
-            Text(erroDaApi,
+            Text(
+              erroDaApi,
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 12,

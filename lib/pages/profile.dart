@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'home.dart';
 import 'main.dart';
@@ -13,7 +15,6 @@ import 'meus_carros.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key, required this.dados}) : super(key: key);
-
   final dados;
 
   @override
@@ -27,6 +28,7 @@ class _Profile extends State<Profile> {
   String nomeUsuario = '';
   late List<CameraDescription> cameras;
   late CameraDescription camera;
+  File image = new File('');
   int _selectedIndex = 4;
 
   static const TextStyle optionStyle =
@@ -103,6 +105,63 @@ class _Profile extends State<Profile> {
         context, MaterialPageRoute(builder: (BuildContext context) => Home()));
   }
 
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() {
+        this.image = imageTemporary;
+      });
+      print(image.path);
+      // essa deve ser a imagem do perfil que deve ser salva! Depois, o perfil deve mostrar essa imagem!
+      // dados['fotoPerfil'] = this.image // algo desta forma...
+    } on PlatformException catch (e) {
+      print('Falha ao escolher imagem: $e');
+    }
+  }
+
+  void _imagePress(context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+              child: Wrap(
+            children: [
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.account_circle),
+                  title: Text('Ver imagem'),
+                  onTap: null, // Visualizar a Imagem em tela Cheia!
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.camera_alt),
+                  title: Text('Câmera'),
+                  onTap: () => pickImage(ImageSource.camera),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.collections),
+                  title: Text('Galeria'),
+                  onTap: () => pickImage(ImageSource.gallery),
+                ),
+              ),
+            ],
+          ));
+        });
+  }
+
+  ImageProvider selectImage() {
+    if (image.path == '')
+      return AssetImage('assets/images/emptyProfileFigure.png');
+    return FileImage(image);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -136,16 +195,25 @@ class _Profile extends State<Profile> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-                width: 130.0,
-                height: 130.0,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(
-                            "https://yt3.ggpht.com/ytc/AKedOLTgBzfv-ZnI70opiHwDPwuIue70fFRe3QZDGZ42hg=s900-c-k-c0x00ffffff-no-rj")))),
-            SizedBox(height: 10),
+            InkWell(
+                onTap: () {
+                  _imagePress(context);
+                },
+                child: Stack(alignment: Alignment.center, children: <Widget>[
+                  Container(
+                      width: 130.0,
+                      height: 130.0,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              fit: BoxFit.fill, image: selectImage()))),
+                  Positioned(
+                    right: 0.0,
+                    bottom: 0.0,
+                    child: Icon(Icons.camera_alt),
+                  )
+                ])),
+            //SizedBox(height: 5),
             Text(nomeUsuario.toUpperCase(),
                 style: TextStyle(
                   color: Color.fromARGB(255, 162, 89, 255),

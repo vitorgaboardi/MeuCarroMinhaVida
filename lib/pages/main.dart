@@ -110,7 +110,7 @@ class _MainPage extends State<MainPage> {
             child: Column(
               children: [
                 ListTile(
-                  leading: Icon(Icons.arrow_drop_down_circle),
+                  leading: Icon(Icons.account_circle),
                   title: const Text('Placa: POX4G21'),
                   subtitle: Text(
                     'Gol Prata - 2020',
@@ -142,7 +142,7 @@ class _MainPage extends State<MainPage> {
             child: Column(
               children: [
                 ListTile(
-                  leading: Icon(Icons.arrow_drop_down_circle),
+                  leading: Icon(Icons.account_circle),
                   title: const Text('Placa: NNU0B98'),
                   subtitle: Text(
                     'Montana Prata - 2020',

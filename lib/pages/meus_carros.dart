@@ -54,7 +54,7 @@ class MeusCarrosState extends State<MeusCarros> {
     } catch (e) {}
   }
 
-  Future<void> _showMyDialog() async {
+  Future<void> _showMyDialog(id_carro) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -81,14 +81,31 @@ class MeusCarrosState extends State<MeusCarros> {
             TextButton(
               child: const Text('Sim'),
               onPressed: () {
-                Navigator.of(context)
-                    .pop(); //COLOCAR AQUI COMANDO PARA EXCLUIR O CARRO DO BD.
+                Navigator.of(context).pop();
+                removerCarro(id_carro);
               },
             ),
           ],
         );
       },
     );
+  }
+
+  void removerCarro(id_carro) async {
+    try {
+      var url = Uri.parse('http://wadsonpontes.com/removercarro');
+      var res = await http.post(url, body: {'id_carro': id_carro});
+
+      if (res.statusCode == 200) {
+        var r = jsonDecode(res.body) as Map;
+
+        if (r['status'] == 'success') {
+
+        } else {}
+      } else {}
+    } catch (e) {}
+
+    atualizarDadosMeusCarros();
   }
 
   @override
@@ -171,8 +188,8 @@ class MeusCarrosState extends State<MeusCarros> {
                               child: Container(
                                   padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
                                   child: ElevatedButton(
-                                      onPressed:
-                                          _showMyDialog, //INSERIR FUNCAO PARA DELETAR CARRO
+                                      onPressed: () =>
+                                          _showMyDialog(dados['carros'][i]['id_carro']),
                                       style: ButtonStyle(
                                           backgroundColor:
                                               MaterialStateProperty.all(

@@ -3,6 +3,10 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'login.dart';
 import 'pesquisa.dart';
@@ -10,9 +14,9 @@ import 'camera.dart';
 import 'profile.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key, required this.dados}) : super(key: key);
+  MainPage({Key? key, required this.dados}) : super(key: key);
 
-  final dados;
+  var dados;
 
   @override
   State<MainPage> createState() => _MainPage(dados: dados);
@@ -21,7 +25,7 @@ class MainPage extends StatefulWidget {
 class _MainPage extends State<MainPage> {
   _MainPage({required this.dados}) : super();
 
-  final dados;
+  var dados;
   late List<CameraDescription> cameras;
   late CameraDescription camera;
   int _selectedIndex = 0;
@@ -81,13 +85,33 @@ class _MainPage extends State<MainPage> {
     });
   }
 
+  void atualizarDados() async {
+    try {
+      var url = Uri.parse('http://wadsonpontes.com/meuscarros');
+      var res = await http.post(url, body: {'email': dados['email']});
+
+      if (res.statusCode == 200) {
+        var r = jsonDecode(res.body) as Map;
+
+        if (r['status'] == 'success') {
+          setState(() {
+            dados = r;
+          });
+        } else {}
+      } else {}
+    } catch (e) {}
+  }
+
   @override
   void initState() {
     super.initState();
+
     availableCameras().then((availableCameras) {
       cameras = availableCameras;
       camera = cameras.first;
     });
+
+    atualizarDados();
   }
 
   @override
@@ -104,24 +128,25 @@ class _MainPage extends State<MainPage> {
       ),
       body: SingleChildScrollView(
           child: Column(children: [
+            for (var i = 0; i < int.parse(dados['qtd_roubos']); i++)
         Card(
             clipBehavior: Clip.hardEdge,
             color: Colors.purple[50],
             child: Column(
               children: [
                 ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: const Text('Placa: POX4G21'),
+                  leading: Image.network('http://wadsonpontes.com/' + dados['imagem']),
+                  title: Text('Placa: ' + dados['roubos'][i]['placa']),
                   subtitle: Text(
-                    'Gol Prata - 2020',
+                    dados['roubos'][i]['modelo'] + ' - ' + dados['roubos'][i]['ano'],
                     style: TextStyle(color: Colors.black.withOpacity(0.6)),
                   ),
                 ),
-                Image.asset('assets/images/car1.png'),
+                Image.network('http://wadsonpontes.com/' + dados['roubos'][i]['imagem']),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                   child: Text(
-                    'Data do Furto: 30/11/2021 - 12:29',
+                    'Data do Furto: ' + dados['roubos'][i]['data'] + ' ' + dados['roubos'][i]['hora'],
                     style: TextStyle(color: Colors.black.withOpacity(0.6)),
                     textAlign: TextAlign.start,
                   ),
@@ -129,39 +154,7 @@ class _MainPage extends State<MainPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                   child: Text(
-                    'Local do Furto: Av. Ayrton Senna, 3022. Neopolis, Natal-RN, 59080-100 - Em frente a farmacia Pague Menos.',
-                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-              ],
-            )),
-        Card(
-            clipBehavior: Clip.hardEdge,
-            color: Colors.purple[50],
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: const Text('Placa: NNU0B98'),
-                  subtitle: Text(
-                    'Montana Prata - 2020',
-                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                  ),
-                ),
-                Image.asset('assets/images/car2.png'),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                  child: Text(
-                    'Data do Furto: 29/11/2021 - 03:29',
-                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                  child: Text(
-                    'Local do Furto: Av. Xavier da Silveira, 55. Nova Descoberta, Natal-RN, 59015-430 - Em frente a Picanha Churrascaria.',
+                    'Local do Furto: ' + dados['roubos'][i]['endereco'] + '. ' + dados['roubos'][i]['bairro'] + ', ' + dados['roubos'][i]['cidade'] + '-' + dados['roubos'][i]['estado'] + ', ' + dados['cep'] + ' - ' + dados['roubos'][i]['complemento'] + '.',
                     style: TextStyle(color: Colors.black.withOpacity(0.6)),
                     textAlign: TextAlign.start,
                   ),

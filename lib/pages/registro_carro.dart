@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 
@@ -29,6 +30,7 @@ class RegistroCarroState extends State<RegistroCarro> {
   TextEditingController corController = TextEditingController();
   TextEditingController anoController = TextEditingController();
 
+  var imagePath;
   File image = new File('');
 
   void resetarCampos() {
@@ -51,14 +53,17 @@ class RegistroCarroState extends State<RegistroCarro> {
 
       try {
         var url = Uri.parse('http://wadsonpontes.com/cadastrocarro');
-        var res = await http.post(url, body: {
-          'email': dados['email'],
-          'senha': dados['senha'],
-          'placa': placa,
-          'modelo': modelo,
-          'cor': cor,
-          'ano': ano
-        });
+
+        var request = new http.MultipartRequest("POST", url);
+        request.fields['email'] = dados['email'];
+        request.fields['senha'] = dados['senha'];
+        request.fields['placa'] = placa;
+        request.fields['modelo'] = modelo;
+        request.fields['cor'] = cor;
+        request.fields['ano'] = ano;
+        request.files.add(await http.MultipartFile.fromPath('imagem', imagePath));
+
+        var res = await http.Response.fromStream(await request.send());
 
         if (res.statusCode == 200) {
           var r = jsonDecode(res.body) as Map;
@@ -104,6 +109,7 @@ class RegistroCarroState extends State<RegistroCarro> {
 
       final imageTemporary = File(image.path);
       setState(() {
+        this.imagePath = image.path;
         this.image = imageTemporary;
       });
       print(image.path);

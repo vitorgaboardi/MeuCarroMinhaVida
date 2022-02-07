@@ -85,6 +85,14 @@ class _MainPage extends State<MainPage> {
     });
   }
 
+  Widget? selecionarImagemRoubo(i) {
+    if (dados['roubos'][i]['fotoperfil'] != null && dados['roubos'][i]['fotoperfil'].toUpperCase() != 'NULL') {
+      return Image.network('http://wadsonpontes.com/' +
+          dados['roubos'][i]['fotoperfil']);
+    }
+    return Image.asset('assets/images/emptyProfileFigure.png');
+  }
+
   void atualizarDados() async {
     try {
       var url = Uri.parse('http://wadsonpontes.com/meuscarros');
@@ -135,7 +143,7 @@ class _MainPage extends State<MainPage> {
             child: Column(
               children: [
                 ListTile(
-                  leading: Image.network('http://wadsonpontes.com/' + dados['imagem']),
+                  leading: selecionarImagemRoubo(i),
                   title: Text('Placa: ' + dados['roubos'][i]['placa']),
                   subtitle: Text(
                     dados['roubos'][i]['modelo'] + ' - ' + dados['roubos'][i]['ano'],
@@ -154,7 +162,7 @@ class _MainPage extends State<MainPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                   child: Text(
-                    'Local do Furto: ' + dados['roubos'][i]['endereco'] + '. ' + dados['roubos'][i]['bairro'] + ', ' + dados['roubos'][i]['cidade'] + '-' + dados['roubos'][i]['estado'] + ', ' + dados['cep'] + ' - ' + dados['roubos'][i]['complemento'] + '.',
+                    'Local do Furto: ' + dados['roubos'][i]['endereco'] + '. ' + dados['roubos'][i]['bairro'] + ', ' + dados['roubos'][i]['cidade'] + '-' + dados['roubos'][i]['estado'] + ', ' + dados['roubos'][i]['cep'] + ' - ' + dados['roubos'][i]['complemento'] + '.',
                     style: TextStyle(color: Colors.black.withOpacity(0.6)),
                     textAlign: TextAlign.start,
                   ),

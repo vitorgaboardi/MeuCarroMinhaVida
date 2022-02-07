@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 import 'home.dart';
 import 'main.dart';
@@ -14,8 +16,8 @@ import 'registro_carro.dart';
 import 'meus_carros.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key, required this.dados}) : super(key: key);
-  final dados;
+  Profile({Key? key, required this.dados}) : super(key: key);
+  var dados;
 
   @override
   State<Profile> createState() => _Profile(dados: dados);
@@ -24,10 +26,11 @@ class Profile extends StatefulWidget {
 class _Profile extends State<Profile> {
   _Profile({required this.dados}) : super();
 
-  final dados;
+  var dados;
   String nomeUsuario = '';
   late List<CameraDescription> cameras;
   late CameraDescription camera;
+  var imagePath;
   File image = new File('');
   int _selectedIndex = 4;
 
@@ -105,18 +108,54 @@ class _Profile extends State<Profile> {
         context, MaterialPageRoute(builder: (BuildContext context) => Home()));
   }
 
+  void enviarFoto() async {
+    try {
+      var url = Uri.parse('http://wadsonpontes.com/fotoperfil');
+
+      var request = new http.MultipartRequest("POST", url);
+      request.fields['email'] = dados['email'];
+      request.fields['senha'] = dados['senha'];
+      request.files.add(await http.MultipartFile.fromPath('imagem', imagePath));
+
+      var res = await http.Response.fromStream(await request.send());
+
+      if (res.statusCode == 200) {
+        var r = jsonDecode(res.body) as Map;
+
+        if (r['status'] == 'success') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Sucesso!')),
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (BuildContext context) => Profile(dados: dados)));
+        } else {
+          print('Erro: não foi retornado status de sucesso');
+        }
+      } else {
+        print('Erro: não foi retornado status 200 de sucesso');
+      }
+    } catch (e) {
+      print('Erro: não foi possível enviar a requisição');
+    }
+  }
+
   Future pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
       final imageTemporary = File(image.path);
+
       setState(() {
+        this.imagePath = image.path;
         this.image = imageTemporary;
       });
-      print(image.path);
-      // essa deve ser a imagem do perfil que deve ser salva! Depois, o perfil deve mostrar essa imagem!
-      // dados['fotoPerfil'] = this.image // algo desta forma...
+
+      enviarFoto();
+
     } on PlatformException catch (e) {
       print('Falha ao escolher imagem: $e');
     }
@@ -130,13 +169,13 @@ class _Profile extends State<Profile> {
           return Container(
               child: Wrap(
             children: [
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text('Ver imagem'),
-                  onTap: null, // Visualizar a Imagem em tela Cheia!
-                ),
-              ),
+              // Card(
+              //   child: ListTile(
+              //     leading: Icon(Icons.account_circle),
+              //     title: Text('Ver imagem'),
+              //     onTap: null, // Visualizar a Imagem em tela Cheia!
+              //   ),
+              // ),
               Card(
                 child: ListTile(
                   leading: Icon(Icons.camera_alt),
@@ -157,9 +196,32 @@ class _Profile extends State<Profile> {
   }
 
   ImageProvider selectImage() {
-    if (image.path == '')
+    if (dados['imagem'] != null && dados['imagem'].toUpperCase() != 'NULL') {
+      return NetworkImage('http://wadsonpontes.com/' +
+          dados['imagem']);
+    }
+    else if (image.path == '') {
       return AssetImage('assets/images/emptyProfileFigure.png');
+    }
     return FileImage(image);
+  }
+
+  void atualizarDados() async {
+    try {
+      var url = Uri.parse('http://wadsonpontes.com/meuscarros');
+      var res = await http.post(url, body: {'email': dados['email']});
+
+      if (res.statusCode == 200) {
+        var r = jsonDecode(res.body) as Map;
+
+        if (r['status'] == 'success') {
+          setState(() {
+            dados = r;
+            nomeUsuario = dados['nome'];
+          });
+        } else {}
+      } else {}
+    } catch (e) {}
   }
 
   @override
@@ -170,9 +232,7 @@ class _Profile extends State<Profile> {
       camera = cameras.first;
     });
 
-    setState(() {
-      nomeUsuario = dados['nome'];
-    });
+    atualizarDados();
   }
 
   @override

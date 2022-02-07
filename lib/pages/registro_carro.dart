@@ -108,13 +108,12 @@ class RegistroCarroState extends State<RegistroCarro> {
       if (image == null) return;
 
       final imageTemporary = File(image.path);
+
       setState(() {
         this.imagePath = image.path;
         this.image = imageTemporary;
       });
-      print(image.path);
-      // essa deve ser a imagem do perfil que deve ser salva! Depois, o perfil deve mostrar essa imagem!
-      // dados['fotoPerfil'] = this.image // algo desta forma...
+
     } on PlatformException catch (e) {
       print('Falha ao escolher imagem: $e');
     }

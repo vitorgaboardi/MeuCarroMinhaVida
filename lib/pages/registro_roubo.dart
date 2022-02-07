@@ -40,7 +40,6 @@ class RegistroRouboState extends State<RegistroRoubo> {
     recompensaController.clear();
   }
 
-  /*
   void cadastrar() async {
     setState(() {
       erroDaApi = '';
@@ -49,18 +48,25 @@ class RegistroRouboState extends State<RegistroRoubo> {
     if (true /* formGlobalKey.currentState!.validate() */) {
       var endereco = enderecoController.text;
       var bairro = bairroController.text;
-      var cidade = cidadeController.text;
-      var estado = estadoController.text;
+      var complemento = complementoController.text;
+      var recompensa = recompensaController.text;
+      final localizations = MaterialLocalizations.of(context);
+      final hora = localizations.formatTimeOfDay(horario!, alwaysUse24HourFormat: true);
 
       try {
         var url = Uri.parse('http://wadsonpontes.com/cadastroroubo');
         var res = await http.post(url, body: {
-          'email': dados['email'],
-          'senha': dados['senha'],
-          'placa': placa,
-          'modelo': modelo,
-          'cor': cor,
-          'ano': ano
+          'id_carro': dados['id_carro_selecionado'],
+          'id_usuario': dados['id_usuario'],
+          'pais': countryValue,
+          'estado': stateValue,
+          'cidade': cityValue,
+          'endereco': endereco,
+          'bairro': bairro,
+          'data': selectedDate.toString(),
+          'hora': hora,
+          'complemento': complemento,
+          'recompensa': recompensa
         });
 
         if (res.statusCode == 200) {
@@ -74,7 +80,7 @@ class RegistroRouboState extends State<RegistroRoubo> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => Profile(dados: dados)));
+                    builder: (BuildContext context) => MeusCarros(dados: dados)));
           } else {
             setState(() {
               erroDaApi = r['error'];
@@ -92,7 +98,6 @@ class RegistroRouboState extends State<RegistroRoubo> {
       }
     }
   }
-  */
 
   void _selectTime() async {
     final TimeOfDay? newTime = await showTimePicker(
@@ -381,7 +386,7 @@ class RegistroRouboState extends State<RegistroRoubo> {
                       child: Container(
                           padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
                           child: ElevatedButton(
-                            onPressed: null,
+                            onPressed: cadastrar,
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.white), // background

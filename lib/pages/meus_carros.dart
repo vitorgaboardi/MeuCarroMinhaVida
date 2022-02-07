@@ -30,7 +30,9 @@ class MeusCarrosState extends State<MeusCarros> {
             builder: (BuildContext context) => Profile(dados: dados)));
   }
 
-  void _cadastroRoubo() {
+  void _cadastroRoubo(id_carro) {
+    dados['id_carro_selecionado'] = id_carro;
+
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -220,7 +222,7 @@ class MeusCarrosState extends State<MeusCarros> {
                               child: Container(
                                   padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
                                   child: ElevatedButton(
-                                    onPressed: _cadastroRoubo,
+                                    onPressed: () => _cadastroRoubo(dados['carros'][i]['id_carro']),
                                     style: ButtonStyle(
                                         backgroundColor:
                                             MaterialStateProperty.all(

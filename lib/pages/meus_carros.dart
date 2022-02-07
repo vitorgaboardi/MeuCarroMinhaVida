@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'home.dart';
 import 'main.dart';
 import 'profile.dart';
+import 'registro_roubo.dart';
 
 class MeusCarros extends StatefulWidget {
   const MeusCarros({Key? key, required this.dados}) : super(key: key);
@@ -26,6 +27,13 @@ class MeusCarrosState extends State<MeusCarros> {
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => Profile(dados: dados)));
+  }
+
+  void _cadastroRoubo() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => RegistroRoubo(dados: dados)));
   }
 
   @override
@@ -74,7 +82,7 @@ class MeusCarrosState extends State<MeusCarros> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
                           child: Text(
                             'Ano: 2012',
                             style:
@@ -83,7 +91,7 @@ class MeusCarrosState extends State<MeusCarros> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
                           child: Text(
                             'Cor: Preto',
                             style:
@@ -92,6 +100,50 @@ class MeusCarrosState extends State<MeusCarros> {
                           ),
                         ),
                       ]),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: SizedBox(
+                              height: 66,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                fit: StackFit.expand,
+                                children: <Widget>[
+                                  Container(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: ElevatedButton(
+                                          onPressed: _cadastroRoubo,
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.white),
+                                              foregroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.white),
+                                              shape: MaterialStateProperty.all(
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5.0),
+                                                      side: BorderSide(
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              162,
+                                                              89,
+                                                              255))))),
+                                          child: Text('CADASTRAR ROUBO',
+                                              style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 162, 89, 255),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w900,
+                                              )))),
+                                ],
+                              )))
+                    ],
+                  ),
                 ],
               )),
         ])));

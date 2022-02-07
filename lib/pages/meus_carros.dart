@@ -54,6 +54,43 @@ class MeusCarrosState extends State<MeusCarros> {
     } catch (e) {}
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Alerta'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Center(
+                  child: Text(
+                      'Você clicou para excluir um carro de seu perfil. Você tem certeza que quer fazer isso?'),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Sim'),
+              onPressed: () {
+                Navigator.of(context)
+                    .pop(); //COLOCAR AQUI COMANDO PARA EXCLUIR O CARRO DO BD.
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +118,8 @@ class MeusCarrosState extends State<MeusCarros> {
                 color: Colors.purple[50],
                 child: Column(
                   children: [
-                    Image.network('http://wadsonpontes.com/' + dados['carros'][i]['imagem']),
+                    Image.network('http://wadsonpontes.com/' +
+                        dados['carros'][i]['imagem']),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -126,6 +164,70 @@ class MeusCarrosState extends State<MeusCarros> {
                             ),
                           ),
                         ]),
+                    Row(children: [
+                      Expanded(
+                          child: SizedBox(
+                              height: 66,
+                              child: Container(
+                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                  child: ElevatedButton(
+                                      onPressed:
+                                          _showMyDialog, //INSERIR FUNCAO PARA DELETAR CARRO
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.white), // background
+                                          foregroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.white), // foreground
+                                          shape: MaterialStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                  side: BorderSide(
+                                                      color: Color.fromARGB(255,
+                                                          162, 89, 255))))),
+                                      child: Center(
+                                        child: Text('DELETAR CARRO',
+                                            style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 162, 89, 255),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w900,
+                                            )),
+                                      ))))),
+                      Expanded(
+                          child: SizedBox(
+                              height: 66,
+                              child: Container(
+                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                  child: ElevatedButton(
+                                    onPressed: _cadastroRoubo,
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white), // background
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white), // foreground
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                                side: BorderSide(
+                                                    color: Color.fromARGB(
+                                                        255, 162, 89, 255))))),
+                                    child: Text('CADASTRAR ROUBO',
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 162, 89, 255),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w900,
+                                        )),
+                                  ))))
+                    ]),
+                    /*
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -167,6 +269,7 @@ class MeusCarrosState extends State<MeusCarros> {
                                 )))
                       ],
                     ),
+                    */
                   ],
                 )),
         ])));

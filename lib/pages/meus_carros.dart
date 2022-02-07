@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -8,9 +9,9 @@ import 'main.dart';
 import 'profile.dart';
 
 class MeusCarros extends StatefulWidget {
-  const MeusCarros({Key? key, required this.dados}) : super(key: key);
+  MeusCarros({Key? key, required this.dados}) : super(key: key);
 
-  final dados;
+  var dados;
 
   @override
   State<StatefulWidget> createState() => MeusCarrosState(dados: dados);
@@ -19,13 +20,46 @@ class MeusCarros extends StatefulWidget {
 class MeusCarrosState extends State<MeusCarros> {
   MeusCarrosState({required this.dados}) : super();
 
-  final dados;
+  var dados;
 
   void voltar() {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => Profile(dados: dados)));
+  }
+
+  void atualizarDadosMeusCarros() async {
+    try {
+      var url = Uri.parse('http://wadsonpontes.com/meuscarros');
+      var res = await http.post(url, body: {'email': dados['email']});
+
+      if (res.statusCode == 200) {
+        var r = jsonDecode(res.body) as Map;
+
+        if (r['status'] == 'success') {
+          setState(() {
+            dados = r;
+          });
+        }
+        else {
+
+        }
+      }
+      else {
+
+      }
+    }
+    catch (e) {
+
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    atualizarDadosMeusCarros();
   }
 
   @override
@@ -42,6 +76,7 @@ class MeusCarrosState extends State<MeusCarros> {
         ),
         body: SingleChildScrollView(
             child: Column(children: [
+              for (var i = 0; i < int.parse(dados['qtd_carros']); i++)
           Card(
               clipBehavior: Clip.hardEdge,
               color: Colors.purple[50],
@@ -54,7 +89,7 @@ class MeusCarrosState extends State<MeusCarros> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                           child: Text(
-                            'Placa: NNX-2934',
+                            'Placa: ' + dados['carros'][i]['placa'],
                             style:
                                 TextStyle(color: Colors.black.withOpacity(0.6)),
                             textAlign: TextAlign.start,
@@ -63,7 +98,7 @@ class MeusCarrosState extends State<MeusCarros> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                           child: Text(
-                            'Modelo: Celta',
+                            'Modelo: ' + dados['carros'][i]['modelo'],
                             style:
                                 TextStyle(color: Colors.black.withOpacity(0.6)),
                             textAlign: TextAlign.start,
@@ -76,7 +111,7 @@ class MeusCarrosState extends State<MeusCarros> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                           child: Text(
-                            'Ano: 2012',
+                            'Ano: ' + dados['carros'][i]['ano'],
                             style:
                                 TextStyle(color: Colors.black.withOpacity(0.6)),
                             textAlign: TextAlign.start,
@@ -85,7 +120,7 @@ class MeusCarrosState extends State<MeusCarros> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                           child: Text(
-                            'Cor: Preto',
+                            'Cor: ' + dados['carros'][i]['cor'],
                             style:
                                 TextStyle(color: Colors.black.withOpacity(0.6)),
                             textAlign: TextAlign.start,

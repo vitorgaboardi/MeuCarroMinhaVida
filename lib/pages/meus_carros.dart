@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'home.dart';
 import 'main.dart';
 import 'profile.dart';
+import 'registro_roubo.dart';
 
 class MeusCarros extends StatefulWidget {
   MeusCarros({Key? key, required this.dados}) : super(key: key);
@@ -29,6 +30,13 @@ class MeusCarrosState extends State<MeusCarros> {
             builder: (BuildContext context) => Profile(dados: dados)));
   }
 
+  void _cadastroRoubo() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => RegistroRoubo(dados: dados)));
+  }
+
   void atualizarDadosMeusCarros() async {
     try {
       var url = Uri.parse('http://wadsonpontes.com/meuscarros');
@@ -41,18 +49,9 @@ class MeusCarrosState extends State<MeusCarros> {
           setState(() {
             dados = r;
           });
-        }
-        else {
-
-        }
-      }
-      else {
-
-      }
-    }
-    catch (e) {
-
-    }
+        } else {}
+      } else {}
+    } catch (e) {}
   }
 
   @override
@@ -76,59 +75,100 @@ class MeusCarrosState extends State<MeusCarros> {
         ),
         body: SingleChildScrollView(
             child: Column(children: [
-              for (var i = 0; i < int.parse(dados['qtd_carros']); i++)
-          Card(
-              clipBehavior: Clip.hardEdge,
-              color: Colors.purple[50],
-              child: Column(
-                children: [
-                  Image.network('http://wadsonpontes.com/' + dados['carros'][i]['imagem']),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          for (var i = 0; i < int.parse(dados['qtd_carros']); i++)
+            Card(
+                clipBehavior: Clip.hardEdge,
+                color: Colors.purple[50],
+                child: Column(
+                  children: [
+                    Image.network('http://wadsonpontes.com/' + dados['carros'][i]['imagem']),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                            child: Text(
+                              'Placa: ' + dados['carros'][i]['placa'],
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6)),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                            child: Text(
+                              'Modelo: ' + dados['carros'][i]['modelo'],
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6)),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+                            child: Text(
+                              'Ano: ' + dados['carros'][i]['ano'],
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6)),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+                            child: Text(
+                              'Cor: ' + dados['carros'][i]['cor'],
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6)),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ]),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                          child: Text(
-                            'Placa: ' + dados['carros'][i]['placa'],
-                            style:
-                                TextStyle(color: Colors.black.withOpacity(0.6)),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                          child: Text(
-                            'Modelo: ' + dados['carros'][i]['modelo'],
-                            style:
-                                TextStyle(color: Colors.black.withOpacity(0.6)),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                      ]),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                          child: Text(
-                            'Ano: ' + dados['carros'][i]['ano'],
-                            style:
-                                TextStyle(color: Colors.black.withOpacity(0.6)),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                          child: Text(
-                            'Cor: ' + dados['carros'][i]['cor'],
-                            style:
-                                TextStyle(color: Colors.black.withOpacity(0.6)),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                      ]),
-                ],
-              )),
+                        Expanded(
+                            child: SizedBox(
+                                height: 66,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  fit: StackFit.expand,
+                                  children: <Widget>[
+                                    Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                        child: ElevatedButton(
+                                            onPressed: _cadastroRoubo,
+                                            style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.white),
+                                                foregroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.white),
+                                                shape: MaterialStateProperty.all(
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                5.0),
+                                                        side: BorderSide(
+                                                            color: Color.fromARGB(
+                                                                255, 162, 89, 255))))),
+                                            child: Text('CADASTRAR ROUBO',
+                                                style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 162, 89, 255),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w900,
+                                                )))),
+                                  ],
+                                )))
+                      ],
+                    ),
+                  ],
+                )),
         ])));
   }
 }

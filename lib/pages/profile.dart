@@ -36,11 +36,11 @@ class _Profile extends State<Profile> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     Text(
-      'Index 0: Home',
+      'Index 0: Inicio',
       style: optionStyle,
     ),
     Text(
-      'Index 1: Search',
+      'Index 1: Pesquisar',
       style: optionStyle,
     ),
     Text(
@@ -48,11 +48,11 @@ class _Profile extends State<Profile> {
       style: optionStyle,
     ),
     Text(
-      'Index 3: Message',
+      'Index 3: Mensagem',
       style: optionStyle,
     ),
     Text(
-      'Index 4: Profile',
+      'Index 4: Perfil',
       style: optionStyle,
     ),
   ];
@@ -180,7 +180,7 @@ class _Profile extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Profile',
+          'Perfil',
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.w800, fontSize: 30),
         ),
@@ -272,7 +272,7 @@ class _Profile extends State<Profile> {
                                         side: BorderSide(
                                             color: Color.fromARGB(
                                                 255, 162, 89, 255))))),
-                            child: Text('REGISTRAR NOVO CARRO',
+                            child: Text('CADASTRAR NOVO CARRO',
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 162, 89, 255),
                                   fontSize: 16,

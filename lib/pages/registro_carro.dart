@@ -61,7 +61,8 @@ class RegistroCarroState extends State<RegistroCarro> {
         request.fields['modelo'] = modelo;
         request.fields['cor'] = cor;
         request.fields['ano'] = ano;
-        request.files.add(await http.MultipartFile.fromPath('imagem', imagePath));
+        request.files
+            .add(await http.MultipartFile.fromPath('imagem', imagePath));
 
         var res = await http.Response.fromStream(await request.send());
 
@@ -113,7 +114,6 @@ class RegistroCarroState extends State<RegistroCarro> {
         this.imagePath = image.path;
         this.image = imageTemporary;
       });
-
     } on PlatformException catch (e) {
       print('Falha ao escolher imagem: $e');
     }
@@ -203,7 +203,7 @@ class RegistroCarroState extends State<RegistroCarro> {
                                           fontWeight: FontWeight.w900,
                                         )))),
                             Positioned(
-                                right: 20.0, bottom: 10.0, child: _selectIcon())
+                                right: 25.0, bottom: 10.0, child: _selectIcon())
                           ],
                         )))
               ],
@@ -246,6 +246,7 @@ class RegistroCarroState extends State<RegistroCarro> {
                   border: OutlineInputBorder(),
                   labelText: 'Ano',
                 ),
+                keyboardType: TextInputType.number,
               ),
             ),
             Row(children: [

@@ -86,11 +86,14 @@ class _MainPage extends State<MainPage> {
   }
 
   Widget? selecionarImagemRoubo(i) {
-    if (dados['roubos'][i]['fotoperfil'] != null && dados['roubos'][i]['fotoperfil'].toUpperCase() != 'NULL') {
-      return Image.network('http://wadsonpontes.com/' +
-          dados['roubos'][i]['fotoperfil']);
+    if (dados['roubos'][i]['fotoperfil'] != null &&
+        dados['roubos'][i]['fotoperfil'].toUpperCase() != 'NULL') {
+      return Image.network(
+          'http://wadsonpontes.com/' + dados['roubos'][i]['fotoperfil'],
+          fit: BoxFit.cover);
     }
-    return Image.asset('assets/images/emptyProfileFigure.png');
+    return Image.asset('assets/images/emptyProfileFigure.png',
+        fit: BoxFit.cover);
   }
 
   void atualizarDados() async {
@@ -136,39 +139,59 @@ class _MainPage extends State<MainPage> {
       ),
       body: SingleChildScrollView(
           child: Column(children: [
-            for (var i = 0; i < int.parse(dados['qtd_roubos']); i++)
-        Card(
-            clipBehavior: Clip.hardEdge,
-            color: Colors.purple[50],
-            child: Column(
-              children: [
-                ListTile(
-                  leading: selecionarImagemRoubo(i),
-                  title: Text('Placa: ' + dados['roubos'][i]['placa']),
-                  subtitle: Text(
-                    dados['roubos'][i]['modelo'] + ' - ' + dados['roubos'][i]['ano'],
-                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
+        for (var i = 0; i < int.parse(dados['qtd_roubos']); i++)
+          Card(
+              clipBehavior: Clip.hardEdge,
+              color: Colors.purple[50],
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(32.0),
+                        child: selecionarImagemRoubo(i)),
+                    title: Text('Placa: ' + dados['roubos'][i]['placa']),
+                    subtitle: Text(
+                      dados['roubos'][i]['modelo'] +
+                          ' - ' +
+                          dados['roubos'][i]['ano'],
+                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                    ),
                   ),
-                ),
-                Image.network('http://wadsonpontes.com/' + dados['roubos'][i]['imagem']),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                  child: Text(
-                    'Data do Furto: ' + dados['roubos'][i]['data'] + ' ' + dados['roubos'][i]['hora'],
-                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    textAlign: TextAlign.start,
+                  Image.network('http://wadsonpontes.com/' +
+                      dados['roubos'][i]['imagem']),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    child: Text(
+                      'Data do Furto: ' +
+                          dados['roubos'][i]['data'] +
+                          ' ' +
+                          dados['roubos'][i]['hora'],
+                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                      textAlign: TextAlign.start,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                  child: Text(
-                    'Local do Furto: ' + dados['roubos'][i]['endereco'] + '. ' + dados['roubos'][i]['bairro'] + ', ' + dados['roubos'][i]['cidade'] + '-' + dados['roubos'][i]['estado'] + ', ' + dados['roubos'][i]['cep'] + ' - ' + dados['roubos'][i]['complemento'] + '.',
-                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    textAlign: TextAlign.start,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                    child: Text(
+                      'Local do Furto: ' +
+                          dados['roubos'][i]['endereco'] +
+                          '. ' +
+                          dados['roubos'][i]['bairro'] +
+                          ', ' +
+                          dados['roubos'][i]['cidade'] +
+                          '-' +
+                          dados['roubos'][i]['estado'] +
+                          ', ' +
+                          dados['roubos'][i]['cep'] +
+                          ' - ' +
+                          dados['roubos'][i]['complemento'] +
+                          '.',
+                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                      textAlign: TextAlign.start,
+                    ),
                   ),
-                ),
-              ],
-            ))
+                ],
+              ))
       ])),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // This is all you need!

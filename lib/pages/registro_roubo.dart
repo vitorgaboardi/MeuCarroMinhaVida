@@ -27,6 +27,7 @@ class RegistroRouboState extends State<RegistroRoubo> {
   String? stateValue = '';
   String? cityValue = '';
   TextEditingController enderecoController = TextEditingController();
+  TextEditingController cepController = TextEditingController();
   TextEditingController bairroController = TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? horario;
@@ -38,6 +39,7 @@ class RegistroRouboState extends State<RegistroRoubo> {
     bairroController.clear();
     complementoController.clear();
     recompensaController.clear();
+    cepController.clear();
   }
 
   void cadastrar() async {
@@ -47,11 +49,13 @@ class RegistroRouboState extends State<RegistroRoubo> {
 
     if (true /* formGlobalKey.currentState!.validate() */) {
       var endereco = enderecoController.text;
+      var cep = cepController.text;
       var bairro = bairroController.text;
       var complemento = complementoController.text;
       var recompensa = recompensaController.text;
       final localizations = MaterialLocalizations.of(context);
-      final hora = localizations.formatTimeOfDay(horario!, alwaysUse24HourFormat: true);
+      final hora =
+          localizations.formatTimeOfDay(horario!, alwaysUse24HourFormat: true);
 
       try {
         var url = Uri.parse('http://wadsonpontes.com/cadastroroubo');
@@ -62,6 +66,7 @@ class RegistroRouboState extends State<RegistroRoubo> {
           'estado': stateValue,
           'cidade': cityValue,
           'endereco': endereco,
+          'cep': cep,
           'bairro': bairro,
           'data': selectedDate.toString(),
           'hora': hora,
@@ -80,7 +85,8 @@ class RegistroRouboState extends State<RegistroRoubo> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => MeusCarros(dados: dados)));
+                    builder: (BuildContext context) =>
+                        MeusCarros(dados: dados)));
           } else {
             setState(() {
               erroDaApi = r['error'];
@@ -235,6 +241,22 @@ class RegistroRouboState extends State<RegistroRoubo> {
                     fontSize: 14,
                   ),
                 ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+              height: 50,
+              child: TextField(
+                controller: cepController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'CEP',
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
+                keyboardType: TextInputType.number,
               ),
             ),
             Container(

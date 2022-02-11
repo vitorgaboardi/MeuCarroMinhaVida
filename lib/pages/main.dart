@@ -56,6 +56,16 @@ class _MainPage extends State<MainPage> {
     ),
   ];
 
+  // FUNÇÃO QUE SERÁ EXECUTADA QUANDO CLICAR EM CIMA DO CARD
+  // POR ENQUANTO, SERÁ REDIRECIONADA PARA O SELECTED CAR, MAS PODE SER CONSIDERADA DIRETAMENTE
+  // PARA ENTRAR EM CONTATO COM O USUÁRIO!
+  void _onVehicleTapped(dados) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => SelectedCar(dados: dados)));
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -140,58 +150,63 @@ class _MainPage extends State<MainPage> {
       body: SingleChildScrollView(
           child: Column(children: [
         for (var i = 0; i < int.parse(dados['qtd_roubos']); i++)
-          Card(
-              clipBehavior: Clip.hardEdge,
-              color: Colors.purple[50],
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(32.0),
-                        child: selecionarImagemRoubo(i)),
-                    title: Text('Placa: ' + dados['roubos'][i]['placa']),
-                    subtitle: Text(
-                      dados['roubos'][i]['modelo'] +
-                          ' - ' +
-                          dados['roubos'][i]['ano'],
-                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    ),
-                  ),
-                  Image.network('http://wadsonpontes.com/' +
-                      dados['roubos'][i]['imagem']),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                    child: Text(
-                      'Data do Furto: ' +
-                          dados['roubos'][i]['data'] +
-                          ' ' +
-                          dados['roubos'][i]['hora'],
-                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                    child: Text(
-                      'Local do Furto: ' +
-                          dados['roubos'][i]['endereco'] +
-                          '. ' +
-                          dados['roubos'][i]['bairro'] +
-                          ', ' +
-                          dados['roubos'][i]['cidade'] +
-                          '-' +
-                          dados['roubos'][i]['estado'] +
-                          ', ' +
-                          dados['roubos'][i]['cep'] +
-                          ' - ' +
-                          dados['roubos'][i]['complemento'] +
-                          '.',
-                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ))
+          InkWell(
+              onTap: () => _onVehicleTapped(dados['roubos'][i]),
+              child: Card(
+                  clipBehavior: Clip.hardEdge,
+                  color: Colors.purple[50],
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(32.0),
+                            child: selecionarImagemRoubo(i)),
+                        title: Text('Placa: ' + dados['roubos'][i]['placa']),
+                        subtitle: Text(
+                          dados['roubos'][i]['modelo'] +
+                              ' - ' +
+                              dados['roubos'][i]['ano'],
+                          style:
+                              TextStyle(color: Colors.black.withOpacity(0.6)),
+                        ),
+                      ),
+                      Image.network('http://wadsonpontes.com/' +
+                          dados['roubos'][i]['imagem']),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                        child: Text(
+                          'Data do Furto: ' +
+                              dados['roubos'][i]['data'] +
+                              ' ' +
+                              dados['roubos'][i]['hora'],
+                          style:
+                              TextStyle(color: Colors.black.withOpacity(0.6)),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                        child: Text(
+                          'Local do Furto: ' +
+                              dados['roubos'][i]['endereco'] +
+                              '. ' +
+                              dados['roubos'][i]['bairro'] +
+                              ', ' +
+                              dados['roubos'][i]['cidade'] +
+                              '-' +
+                              dados['roubos'][i]['estado'] +
+                              ', ' +
+                              dados['roubos'][i]['cep'] +
+                              ' - ' +
+                              dados['roubos'][i]['complemento'] +
+                              '.',
+                          style:
+                              TextStyle(color: Colors.black.withOpacity(0.6)),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ],
+                  ))),
       ])),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // This is all you need!
@@ -221,6 +236,40 @@ class _MainPage extends State<MainPage> {
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+// Quando o carro é selecionado, deve vir para esta subpágina.
+class SelectedCar extends StatefulWidget {
+  SelectedCar({Key? key, required this.dados}) : super(key: key);
+
+  var dados;
+
+  @override
+  State<SelectedCar> createState() => _SelectedCar(dados: dados);
+}
+
+class _SelectedCar extends State<SelectedCar> {
+  _SelectedCar({required this.dados}) : super();
+
+  var dados;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Home',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w800, fontSize: 30),
+        ),
+        backgroundColor: Color.fromARGB(255, 162, 89, 255),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [Text(dados['placa'])],
       ),
     );
   }

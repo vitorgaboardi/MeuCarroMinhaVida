@@ -59,7 +59,9 @@ class _MainPage extends State<MainPage> {
   // FUNÇÃO QUE SERÁ EXECUTADA QUANDO CLICAR EM CIMA DO CARD
   // POR ENQUANTO, SERÁ REDIRECIONADA PARA O SELECTED CAR, MAS PODE SER CONSIDERADA DIRETAMENTE
   // PARA ENTRAR EM CONTATO COM O USUÁRIO!
-  void _onVehicleTapped(dados) {
+  void _onVehicleTapped(roubo) {
+    dados['roubo'] = roubo;
+
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -170,8 +172,12 @@ class _MainPage extends State<MainPage> {
                               TextStyle(color: Colors.black.withOpacity(0.6)),
                         ),
                       ),
-                      Image.network('http://wadsonpontes.com/' +
-                          dados['roubos'][i]['imagem']),
+                      Image.network(
+                          'http://wadsonpontes.com/' +
+                          dados['roubos'][i]['imagem'],
+                          width: 200,
+                          height: 100,
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                         child: Text(
@@ -179,27 +185,6 @@ class _MainPage extends State<MainPage> {
                               dados['roubos'][i]['data'] +
                               ' ' +
                               dados['roubos'][i]['hora'],
-                          style:
-                              TextStyle(color: Colors.black.withOpacity(0.6)),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                        child: Text(
-                          'Local do Furto: ' +
-                              dados['roubos'][i]['endereco'] +
-                              '. ' +
-                              dados['roubos'][i]['bairro'] +
-                              ', ' +
-                              dados['roubos'][i]['cidade'] +
-                              '-' +
-                              dados['roubos'][i]['estado'] +
-                              ', ' +
-                              dados['roubos'][i]['cep'] +
-                              ' - ' +
-                              dados['roubos'][i]['complemento'] +
-                              '.',
                           style:
                               TextStyle(color: Colors.black.withOpacity(0.6)),
                           textAlign: TextAlign.start,
@@ -255,6 +240,49 @@ class _SelectedCar extends State<SelectedCar> {
   _SelectedCar({required this.dados}) : super();
 
   var dados;
+  late List<CameraDescription> cameras;
+  late CameraDescription camera;
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+
+      if (index == 0) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => MainPage(dados: dados)));
+      } else if (index == 1) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Search(dados: dados)));
+      } else if (index == 2) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    Camera(camera: camera, dados: dados)));
+      } else if (index == 4) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Profile(dados: dados)));
+      }
+    });
+  }
+
+  Widget? selecionarImagemRoubo() {
+    if (dados['roubo']['fotoperfil'] != null &&
+        dados['roubo']['fotoperfil'].toUpperCase() != 'NULL') {
+      return Image.network(
+          'http://wadsonpontes.com/' + dados['roubo']['fotoperfil'],
+          fit: BoxFit.cover);
+    }
+    return Image.asset('assets/images/emptyProfileFigure.png',
+        fit: BoxFit.cover);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -268,8 +296,93 @@ class _SelectedCar extends State<SelectedCar> {
         backgroundColor: Color.fromARGB(255, 162, 89, 255),
         centerTitle: true,
       ),
-      body: Column(
-        children: [Text(dados['placa'])],
+      body: SingleChildScrollView(
+          child: Column(children: [
+                  Card(
+                      clipBehavior: Clip.hardEdge,
+                      color: Colors.purple[50],
+                      child: Column(
+                        children: [
+                          ListTile(
+                            leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(32.0),
+                                child: selecionarImagemRoubo()),
+                            title: Text('Placa: ' + dados['roubo']['placa']),
+                            subtitle: Text(
+                              dados['roubo']['modelo'] +
+                                  ' - ' +
+                                  dados['roubo']['ano'],
+                              style:
+                              TextStyle(color: Colors.black.withOpacity(0.6)),
+                            ),
+                          ),
+                          Image.network(
+                            'http://wadsonpontes.com/' +
+                                dados['roubo']['imagem']),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                            child: Text(
+                              'Data do Furto: ' +
+                                  dados['roubo']['data'] +
+                                  ' ' +
+                                  dados['roubo']['hora'],
+                              style:
+                              TextStyle(color: Colors.black.withOpacity(0.6)),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                            child: Text(
+                              'Local do Furto: ' +
+                                  dados['roubo']['endereco'] +
+                                  '. ' +
+                                  dados['roubo']['bairro'] +
+                                  ', ' +
+                                  dados['roubo']['cidade'] +
+                                  '-' +
+                                  dados['roubo']['estado'] +
+                                  ', ' +
+                                  dados['roubo']['cep'] +
+                                  ' - ' +
+                                  dados['roubo']['complemento'] +
+                                  '.',
+                              style:
+                              TextStyle(color: Colors.black.withOpacity(0.6)),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      )),
+          ])),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // This is all you need!
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: Colors.white,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera_alt),
+            label: 'Camera',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: 'Message',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
   }

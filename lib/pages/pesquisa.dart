@@ -10,21 +10,16 @@ import 'camera.dart';
 import 'profile.dart';
 
 class Search extends StatefulWidget {
-  const Search({
-    Key? key,
-    required this.dados
-  }) : super(key: key);
+  const Search({Key? key, required this.dados}) : super(key: key);
 
   final dados;
 
   @override
-  State<Search> createState() => _Search(dados:dados);
+  State<Search> createState() => _Search(dados: dados);
 }
 
 class _Search extends State<Search> {
-  _Search({
-    required this.dados
-  }) : super();
+  _Search({required this.dados}) : super();
 
   final dados;
   late List<CameraDescription> cameras;
@@ -62,17 +57,25 @@ class _Search extends State<Search> {
       _selectedIndex = index;
 
       if (index == 0) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => MainPage(dados:dados)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => MainPage(dados: dados)));
       } else if (index == 1) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Search(dados:dados)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Search(dados: dados)));
       } else if (index == 2) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Camera(camera:camera, dados:dados)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Camera(dados: dados)));
       } else if (index == 4) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Profile(dados:dados)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Profile(dados: dados)));
       }
     });
   }

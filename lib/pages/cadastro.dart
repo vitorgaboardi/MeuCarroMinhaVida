@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -45,22 +44,21 @@ class CadastroState extends State<Cadastro> {
             );
 
             Navigator.push(
-                context, MaterialPageRoute(builder: (BuildContext context) =>
-                Cadastro2(email: email, senha: senha)));
-          }
-          else {
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        Cadastro2(email: email, senha: senha)));
+          } else {
             setState(() {
               erroDaApi = r['error'];
             });
           }
-        }
-        else {
+        } else {
           setState(() {
             erroDaApi = 'Erro de comunicação com o servidor';
           });
         }
-      }
-      catch (e) {
+      } catch (e) {
         setState(() {
           erroDaApi = 'Ocorreu um erro inesperado';
         });
@@ -78,7 +76,8 @@ class CadastroState extends State<Cadastro> {
   }
 
   bool eSenhaValida(senha) {
-    final passwordRegExp = new RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+    final passwordRegExp = new RegExp(
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
     return passwordRegExp.hasMatch(senha);
   }
 
@@ -163,50 +162,46 @@ class CadastroState extends State<Cadastro> {
                         },
                       ),
                     ),
-                    Row(
-                        children: [
-                          Expanded(
-                              child: SizedBox(
-                                  height: 100,
-                                  child: Container(
-                                      padding: EdgeInsets.fromLTRB(20, 35, 20, 10),
-                                      child: ElevatedButton(
-                                        onPressed: cadastrar,
-                                        style: ButtonStyle(
-                                            backgroundColor: MaterialStateProperty.all(
+                    Row(children: [
+                      Expanded(
+                          child: SizedBox(
+                              height: 100,
+                              child: Container(
+                                  padding: EdgeInsets.fromLTRB(20, 35, 20, 10),
+                                  child: ElevatedButton(
+                                    onPressed: cadastrar,
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
                                                 Colors.white), // background
-                                            foregroundColor: MaterialStateProperty.all(
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
                                                 Colors.white), // foreground
-                                            shape: MaterialStateProperty.all(
-                                                RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(5.0),
-                                                    side: BorderSide(
-                                                        color: Color.fromARGB(
-                                                            255, 162, 89, 255))))),
-                                        child: Text('PRÓXIMO',
-                                            style: TextStyle(
-                                              color: Color.fromARGB(255, 162, 89, 255),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w900,
-                                            )),
-                                      )
-                                  )
-                              )
-                          ),
-                        ]
-                    ),
-                    Text(erroDaApi,
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                                side: BorderSide(
+                                                    color: Color.fromARGB(
+                                                        255, 162, 89, 255))))),
+                                    child: Text('PRÓXIMO',
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 162, 89, 255),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w900,
+                                        )),
+                                  )))),
+                    ]),
+                    Text(
+                      erroDaApi,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
                     )
                   ],
-                )
-            )
-        )
-    );
+                ))));
   }
 }

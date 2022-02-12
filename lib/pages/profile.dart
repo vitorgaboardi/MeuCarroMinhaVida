@@ -78,8 +78,7 @@ class _Profile extends State<Profile> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    Camera(camera: camera, dados: dados)));
+                builder: (BuildContext context) => Camera(dados: dados)));
       } else if (index == 4) {
         Navigator.push(
             context,
@@ -128,9 +127,9 @@ class _Profile extends State<Profile> {
           );
 
           Navigator.push(
-            context,
-            MaterialPageRoute(
-            builder: (BuildContext context) => Profile(dados: dados)));
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => Profile(dados: dados)));
         } else {
           print('Erro: não foi retornado status de sucesso');
         }
@@ -152,10 +151,10 @@ class _Profile extends State<Profile> {
       setState(() {
         this.imagePath = image.path;
         this.image = imageTemporary;
+        Navigator.pop(context);
       });
 
       enviarFoto();
-
     } on PlatformException catch (e) {
       print('Falha ao escolher imagem: $e');
     }
@@ -169,13 +168,6 @@ class _Profile extends State<Profile> {
           return Container(
               child: Wrap(
             children: [
-              // Card(
-              //   child: ListTile(
-              //     leading: Icon(Icons.account_circle),
-              //     title: Text('Ver imagem'),
-              //     onTap: null, // Visualizar a Imagem em tela Cheia!
-              //   ),
-              // ),
               Card(
                 child: ListTile(
                   leading: Icon(Icons.camera_alt),
@@ -190,6 +182,12 @@ class _Profile extends State<Profile> {
                   onTap: () => pickImage(ImageSource.gallery),
                 ),
               ),
+              Card(
+                  child: ListTile(
+                leading: Icon(Icons.close),
+                title: Text('Cancelar'),
+                onTap: () => Navigator.pop(context),
+              )),
             ],
           ));
         });
@@ -197,10 +195,8 @@ class _Profile extends State<Profile> {
 
   ImageProvider selectImage() {
     if (dados['imagem'] != null && dados['imagem'].toUpperCase() != 'NULL') {
-      return NetworkImage('http://wadsonpontes.com/' +
-          dados['imagem']);
-    }
-    else if (image.path == '') {
+      return NetworkImage('http://wadsonpontes.com/' + dados['imagem']);
+    } else if (image.path == '') {
       return AssetImage('assets/images/emptyProfileFigure.png');
     }
     return FileImage(image);

@@ -113,6 +113,7 @@ class RegistroCarroState extends State<RegistroCarro> {
       setState(() {
         this.imagePath = image.path;
         this.image = imageTemporary;
+        Navigator.pop(context);
       });
     } on PlatformException catch (e) {
       print('Falha ao escolher imagem: $e');
@@ -146,6 +147,12 @@ class RegistroCarroState extends State<RegistroCarro> {
                   onTap: () => pickImage(ImageSource.gallery),
                 ),
               ),
+              Card(
+                  child: ListTile(
+                leading: Icon(Icons.close),
+                title: Text('Cancelar'),
+                onTap: () => Navigator.pop(context),
+              )),
             ],
           ));
         });

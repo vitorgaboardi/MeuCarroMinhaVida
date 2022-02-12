@@ -86,8 +86,7 @@ class _MainPage extends State<MainPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    Camera(camera: camera, dados: dados)));
+                builder: (BuildContext context) => Camera(dados: dados)));
       } else if (index == 4) {
         Navigator.push(
             context,
@@ -173,10 +172,10 @@ class _MainPage extends State<MainPage> {
                         ),
                       ),
                       Image.network(
-                          'http://wadsonpontes.com/' +
-                          dados['roubos'][i]['imagem'],
-                          width: 200,
-                          height: 100,
+                        'http://wadsonpontes.com/' +
+                            dados['roubos'][i]['imagem'],
+                        width: 200,
+                        height: 100,
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
@@ -262,8 +261,7 @@ class _SelectedCar extends State<SelectedCar> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    Camera(camera: camera, dados: dados)));
+                builder: (BuildContext context) => Camera(dados: dados)));
       } else if (index == 4) {
         Navigator.push(
             context,
@@ -298,63 +296,92 @@ class _SelectedCar extends State<SelectedCar> {
       ),
       body: SingleChildScrollView(
           child: Column(children: [
-                  Card(
-                      clipBehavior: Clip.hardEdge,
-                      color: Colors.purple[50],
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(32.0),
-                                child: selecionarImagemRoubo()),
-                            title: Text('Placa: ' + dados['roubo']['placa']),
-                            subtitle: Text(
-                              dados['roubo']['modelo'] +
-                                  ' - ' +
-                                  dados['roubo']['ano'],
-                              style:
-                              TextStyle(color: Colors.black.withOpacity(0.6)),
-                            ),
-                          ),
-                          Image.network(
-                            'http://wadsonpontes.com/' +
-                                dados['roubo']['imagem']),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                            child: Text(
-                              'Data do Furto: ' +
-                                  dados['roubo']['data'] +
-                                  ' ' +
-                                  dados['roubo']['hora'],
-                              style:
-                              TextStyle(color: Colors.black.withOpacity(0.6)),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                            child: Text(
-                              'Local do Furto: ' +
-                                  dados['roubo']['endereco'] +
-                                  '. ' +
-                                  dados['roubo']['bairro'] +
-                                  ', ' +
-                                  dados['roubo']['cidade'] +
-                                  '-' +
-                                  dados['roubo']['estado'] +
-                                  ', ' +
-                                  dados['roubo']['cep'] +
-                                  ' - ' +
-                                  dados['roubo']['complemento'] +
-                                  '.',
-                              style:
-                              TextStyle(color: Colors.black.withOpacity(0.6)),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      )),
-          ])),
+        Card(
+            clipBehavior: Clip.hardEdge,
+            color: Colors.purple[50],
+            child: Column(
+              children: [
+                ListTile(
+                  leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(32.0),
+                      child: selecionarImagemRoubo()),
+                  title: Text('Placa: ' + dados['roubo']['placa']),
+                  subtitle: Text(
+                    dados['roubo']['modelo'] + ' - ' + dados['roubo']['ano'],
+                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                  ),
+                ),
+                Image.network(
+                    'http://wadsonpontes.com/' + dados['roubo']['imagem']),
+                Row(children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    child: Text(
+                      'Data: ' +
+                          dados['roubo']['data'] +
+                          ' ' +
+                          dados['roubo']['hora'],
+                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                      textAlign: TextAlign.left,
+                    ),
+                  )
+                ]),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                  child: Text(
+                    'Local: ' +
+                        dados['roubo']['endereco'] +
+                        '. ' +
+                        dados['roubo']['bairro'] +
+                        ', ' +
+                        dados['roubo']['cidade'] +
+                        ' - ' +
+                        dados['roubo']['estado'] +
+                        ', ' +
+                        dados['roubo']['cep'] +
+                        ' - ' +
+                        dados['roubo']['complemento'] +
+                        '.',
+                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                        child: SizedBox(
+                            height: 76,
+                            child: Container(
+                                padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                                child: ElevatedButton(
+                                    onPressed: null,
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white), // background
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white), // foreground
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                                side: BorderSide(
+                                                    color: Color.fromARGB(
+                                                        255, 162, 89, 255))))),
+                                    child: Text(
+                                        'ENTRAR EM CONTATO COM PROPRIETÁRIO',
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 162, 89, 255),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w900,
+                                        ))))))
+                  ],
+                ),
+              ],
+            )),
+      ])),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // This is all you need!
         items: const <BottomNavigationBarItem>[

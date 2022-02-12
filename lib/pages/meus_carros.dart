@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'home.dart';
-import 'main.dart';
 import 'profile.dart';
 import 'registro_roubo.dart';
 
@@ -30,10 +27,10 @@ class MeusCarrosState extends State<MeusCarros> {
             builder: (BuildContext context) => Profile(dados: dados)));
   }
 
-  void _carroRecuperado(id_carro) async {
+  void _carroRecuperado(idCarro) async {
     try {
       var url = Uri.parse('http://wadsonpontes.com/removerroubo');
-      var res = await http.post(url, body: {'id_carro': id_carro});
+      var res = await http.post(url, body: {'id_carro': idCarro});
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;
@@ -46,8 +43,8 @@ class MeusCarrosState extends State<MeusCarros> {
     atualizarDadosMeusCarros();
   }
 
-  void _cadastroRoubo(id_carro) {
-    dados['id_carro_selecionado'] = id_carro;
+  void _cadastroRoubo(idCarro) {
+    dados['id_carro_selecionado'] = idCarro;
 
     Navigator.push(
         context,
@@ -72,7 +69,7 @@ class MeusCarrosState extends State<MeusCarros> {
     } catch (e) {}
   }
 
-  Future<void> _mensagemDeletarRoubo(id_carro) async {
+  Future<void> _mensagemDeletarRoubo(idCarro) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -99,7 +96,7 @@ class MeusCarrosState extends State<MeusCarros> {
               child: const Text('Sim'),
               onPressed: () {
                 Navigator.of(context).pop();
-                _carroRecuperado(id_carro);
+                _carroRecuperado(idCarro);
               },
             ),
           ],
@@ -108,7 +105,7 @@ class MeusCarrosState extends State<MeusCarros> {
     );
   }
 
-  Future<void> _mensagemDeletarCarro(id_carro) async {
+  Future<void> _mensagemDeletarCarro(idCarro) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -136,7 +133,7 @@ class MeusCarrosState extends State<MeusCarros> {
               child: const Text('Sim'),
               onPressed: () {
                 Navigator.of(context).pop();
-                removerCarro(id_carro);
+                removerCarro(idCarro);
               },
             ),
           ],
@@ -145,10 +142,10 @@ class MeusCarrosState extends State<MeusCarros> {
     );
   }
 
-  void removerCarro(id_carro) async {
+  void removerCarro(idCarro) async {
     try {
       var url = Uri.parse('http://wadsonpontes.com/removercarro');
-      var res = await http.post(url, body: {'id_carro': id_carro});
+      var res = await http.post(url, body: {'id_carro': idCarro});
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;

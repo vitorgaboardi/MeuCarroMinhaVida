@@ -289,7 +289,7 @@ class _SelectedCar extends State<SelectedCar> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Home',
+          'Roubo',
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.w800, fontSize: 30),
         ),

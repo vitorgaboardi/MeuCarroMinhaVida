@@ -30,11 +30,20 @@ class MeusCarrosState extends State<MeusCarros> {
             builder: (BuildContext context) => Profile(dados: dados)));
   }
 
-  void _carroRecuperado(id_carro) {
-    // ATUALIZAR A INFORMAÇÃO SOBRE O 'roubado' como sendo 'nao'!
-    dados['carros'][id_carro]['roubado'] = 'nao';
+  void _carroRecuperado(id_carro) async {
+    try {
+      var url = Uri.parse('http://wadsonpontes.com/removerroubo');
+      var res = await http.post(url, body: {'id_carro': id_carro});
 
-    // EXCLUIR O CARRO ROUBADO COM O ID 'id_carro' DO BANCO de furtos!
+      if (res.statusCode == 200) {
+        var r = jsonDecode(res.body) as Map;
+
+        if (r['status'] == 'success') {
+        } else {}
+      } else {}
+    } catch (e) {}
+
+    atualizarDadosMeusCarros();
   }
 
   void _cadastroRoubo(id_carro) {

@@ -86,10 +86,18 @@ class _Camera extends State<Camera> {
   }
 
   void getPlate() async {
-    var url = Uri.parse("http://alpr.imd.ufrn.br/lpr/frame");
-    Map<String, String> headers = {
-      'Authorization': 'Api-Key 3evA1njZ.72wf1El72h74k2vGi1g6u6JkdgqKgiWb'
-    };
+    var url = Uri.parse("http://alpr.imd.ufrn.br/lpr/frame/");
+    var request = new http.MultipartRequest('POST', url);
+
+    request.headers.addAll(
+        {"Authorization": 'Api-Key 3evA1njZ.72wf1El72h74k2vGi1g6u6JkdgqKgiWb'});
+    request.files.add(await http.MultipartFile.fromPath('image', imagePath));
+
+    var response = await http.Response.fromStream(await request.send());
+    if (response.statusCode == 200)
+      print("Uploaded!");
+    else
+      print(response.statusCode);
   }
 
   @override

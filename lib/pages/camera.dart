@@ -61,7 +61,6 @@ class _Camera extends State<Camera> {
       if (image == null) return;
 
       final imageTemporary = File(image.path);
-      print(image.path);
 
       setState(() {
         this.imagePath = image.path;
@@ -73,15 +72,24 @@ class _Camera extends State<Camera> {
     }
   }
 
-  ImageProvider selectImage() {
-    /*
-    if (dados['imagem'] != null && dados['imagem'].toUpperCase() != 'NULL') {
-      return NetworkImage('http://wadsonpontes.com/' + dados['imagem']);
-    } else if (image.path == '') {
-      return AssetImage('assets/images/emptyProfileFigure.png');
+  Widget _showButtonSubmit() {
+    if (imagePath == '' || imagePath == null) {
+      return Container();
     }
-    */
-    return FileImage(image);
+    return FloatingActionButton(
+        onPressed: () {
+          print(imagePath);
+          getPlate();
+        },
+        backgroundColor: Color.fromARGB(255, 162, 89, 255),
+        child: const Icon(Icons.check));
+  }
+
+  void getPlate() async {
+    var url = Uri.parse("http://alpr.imd.ufrn.br/lpr/frame");
+    Map<String, String> headers = {
+      'Authorization': 'Api-Key 3evA1njZ.72wf1El72h74k2vGi1g6u6JkdgqKgiWb'
+    };
   }
 
   @override
@@ -136,13 +144,9 @@ class _Camera extends State<Camera> {
       body: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              image: DecorationImage(fit: BoxFit.fill, image: selectImage()))),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Add your onPressed code here!
-          },
-          backgroundColor: Color.fromARGB(255, 162, 89, 255),
-          child: const Icon(Icons.check)),
+              image:
+                  DecorationImage(fit: BoxFit.fill, image: FileImage(image)))),
+      floatingActionButton: _showButtonSubmit(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // This is all you need!
         items: const <BottomNavigationBarItem>[

@@ -205,7 +205,10 @@ class _Profile extends State<Profile> {
   void atualizarDados() async {
     try {
       var url = Uri.parse('http://wadsonpontes.com/buscardados');
-      var res = await http.post(url, body: {'email': dados['email'], 'roubo': json.encode(dados['roubo'])});
+      var res = await http.post(url, body: {
+        'email': dados['email'],
+        'roubo': json.encode(dados['roubo'])
+      });
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;
@@ -214,9 +217,15 @@ class _Profile extends State<Profile> {
           setState(() {
             dados = r;
           });
-        } else {print('Erro nos dados enviados');}
-      } else {print('Erro no servidor');}
-    } catch (e) {print('Erro na requisicao');}
+        } else {
+          print('Erro nos dados enviados');
+        }
+      } else {
+        print('Erro no servidor');
+      }
+    } catch (e) {
+      print('Erro na requisicao');
+    }
   }
 
   @override
@@ -269,7 +278,7 @@ class _Profile extends State<Profile> {
                   )
                 ])),
             //SizedBox(height: 5),
-            Text(nomeUsuario.toUpperCase(),
+            Text(dados['nome'].toUpperCase(),
                 style: TextStyle(
                   color: Color.fromARGB(255, 162, 89, 255),
                   fontSize: 16,
@@ -281,9 +290,38 @@ class _Profile extends State<Profile> {
           children: [
             Expanded(
                 child: SizedBox(
-                    height: 86,
+                    height: 70,
                     child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+                        child: ElevatedButton(
+                            onPressed: null, // criar aqui minhas informações
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.white), // background
+                                foregroundColor: MaterialStateProperty.all(
+                                    Colors.white), // foreground
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        side: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 162, 89, 255))))),
+                            child: Text('MINHAS INFORMAÇÕES',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 162, 89, 255),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                ))))))
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: SizedBox(
+                    height: 70,
+                    child: Container(
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
                         child: ElevatedButton(
                             onPressed: _meusCarros,
                             style: ButtonStyle(
@@ -310,9 +348,9 @@ class _Profile extends State<Profile> {
           children: [
             Expanded(
                 child: SizedBox(
-                    height: 76,
+                    height: 70,
                     child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
                         child: ElevatedButton(
                             onPressed: _cadastrarCarro,
                             style: ButtonStyle(
@@ -339,9 +377,9 @@ class _Profile extends State<Profile> {
           children: [
             Expanded(
                 child: SizedBox(
-                    height: 76,
+                    height: 70,
                     child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
                         child: ElevatedButton(
                             onPressed: _home,
                             style: ButtonStyle(

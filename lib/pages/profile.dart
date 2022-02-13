@@ -205,7 +205,7 @@ class _Profile extends State<Profile> {
   void atualizarDados() async {
     try {
       var url = Uri.parse('http://wadsonpontes.com/meuscarros');
-      var res = await http.post(url, body: {'email': dados['email']});
+      var res = await http.post(url, body: {'email': dados['email'], 'roubo': dados['roubo']});
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;

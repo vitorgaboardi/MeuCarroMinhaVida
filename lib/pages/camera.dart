@@ -85,19 +85,116 @@ class _Camera extends State<Camera> {
         child: const Icon(Icons.check));
   }
 
-  void getPlate() async {
-    var url = Uri.parse("http://alpr.imd.ufrn.br/lpr/frame/");
+  Future<void> getPlate() async {
+    var url = Uri.parse("https://alpr.imd.ufrn.br/lpr/frame");
     var request = new http.MultipartRequest('POST', url);
 
     request.headers.addAll(
-        {"Authorization": 'Api-Key 3evA1njZ.72wf1El72h74k2vGi1g6u6JkdgqKgiWb'});
+        {"Authorization": 'Api-Key U3OOs6u2.J4BFTdWCvOpZyHbAWVZiupPwNJ2j0EdQ'});
     request.files.add(await http.MultipartFile.fromPath('image', imagePath));
 
     var response = await http.Response.fromStream(await request.send());
-    if (response.statusCode == 200)
-      print("Uploaded!");
-    else
-      print(response.statusCode);
+    if (response.statusCode == 201) {
+      final jsonResponse = json.decode(response.body);
+      // Abrir um alerta sobre os resultados
+      // Apenas uma placa foi detectada!
+      if (jsonResponse['results'].length == 1) {
+        var placa = jsonResponse['results'][0]['plate'];
+
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Placa: ' + placa),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('A placa esta correta?'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Não'),
+                  onPressed: () {
+                    // ir para a pesquisa do veiculo que tenha a placa 'placa'
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Digite a placa correta!')),
+                    );
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                Search(dados: dados)));
+                  },
+                ),
+                TextButton(
+                  child: const Text('Sim'),
+                  onPressed: () {
+                    // PESQUISAR SE A PLACA placa ESTA DENTRO DO CADASTRO DE CARROS ROUBADOS
+                    // SE TIVER, JÁ APARECER O CARD COM AS INFORMAÇÕES PARA ENTRAR EM CONTATO
+                    // COM O PROPRIETÁRIO!
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Mais que um carro detectado'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('Por favor, tire a foto de apenas um carro.'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Voltar'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Erro.'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Por favor, tente mais tarde.'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Voltar'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override

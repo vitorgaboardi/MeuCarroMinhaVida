@@ -204,8 +204,8 @@ class _Profile extends State<Profile> {
 
   void atualizarDados() async {
     try {
-      var url = Uri.parse('http://wadsonpontes.com/meuscarros');
-      var res = await http.post(url, body: {'email': dados['email'], 'roubo': dados['roubo']});
+      var url = Uri.parse('http://wadsonpontes.com/buscardados');
+      var res = await http.post(url, body: {'email': dados['email'], 'roubo': json.encode(dados['roubo'])});
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;
@@ -213,11 +213,10 @@ class _Profile extends State<Profile> {
         if (r['status'] == 'success') {
           setState(() {
             dados = r;
-            nomeUsuario = dados['nome'];
           });
-        } else {}
-      } else {}
-    } catch (e) {}
+        } else {print('Erro nos dados enviados');}
+      } else {print('Erro no servidor');}
+    } catch (e) {print('Erro na requisicao');}
   }
 
   @override

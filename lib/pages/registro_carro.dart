@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -57,7 +56,7 @@ class RegistroCarroState extends State<RegistroCarro> {
         var request = new http.MultipartRequest("POST", url);
         request.fields['email'] = dados['email'];
         request.fields['senha'] = dados['senha'];
-        request.fields['placa'] = placa;
+        request.fields['placa'] = placa.toUpperCase();
         request.fields['modelo'] = modelo;
         request.fields['cor'] = cor;
         request.fields['ano'] = ano;
@@ -118,6 +117,12 @@ class RegistroCarroState extends State<RegistroCarro> {
     } on PlatformException catch (e) {
       print('Falha ao escolher imagem: $e');
     }
+  }
+
+  bool placaValida(placa) {
+    final placaChar = RegExp(r'[!@#$%^&*(),.-?":{}|<>]');
+    print(placa);
+    return placaChar.hasMatch(placa);
   }
 
   Icon _selectIcon() {
@@ -217,12 +222,20 @@ class RegistroCarroState extends State<RegistroCarro> {
             ),
             Container(
               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: TextField(
+              child: TextFormField(
+                maxLength: 7,
                 controller: placaController,
                 decoration: InputDecoration(
+                  counterText: '',
                   border: OutlineInputBorder(),
                   labelText: 'Placa',
                 ),
+                validator: (placa) {
+                  if (placaValida(placa))
+                    return null;
+                  else
+                    return 'Placa deve ter apenas letras e números';
+                },
               ),
             ),
             Container(

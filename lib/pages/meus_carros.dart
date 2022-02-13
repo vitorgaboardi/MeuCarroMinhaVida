@@ -40,7 +40,7 @@ class MeusCarrosState extends State<MeusCarros> {
       } else {}
     } catch (e) {}
 
-    atualizarDadosMeusCarros();
+    atualizarDados();
   }
 
   void _cadastroRoubo(idCarro) {
@@ -52,10 +52,10 @@ class MeusCarrosState extends State<MeusCarros> {
             builder: (BuildContext context) => RegistroRoubo(dados: dados)));
   }
 
-  void atualizarDadosMeusCarros() async {
+  void atualizarDados() async {
     try {
-      var url = Uri.parse('http://wadsonpontes.com/meuscarros');
-      var res = await http.post(url, body: {'email': dados['email'], 'roubo': dados['roubo']});
+      var url = Uri.parse('http://wadsonpontes.com/buscardados');
+      var res = await http.post(url, body: {'email': dados['email'], 'roubo': json.encode(dados['roubo'])});
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;
@@ -64,9 +64,9 @@ class MeusCarrosState extends State<MeusCarros> {
           setState(() {
             dados = r;
           });
-        } else {}
-      } else {}
-    } catch (e) {}
+        } else {print('Erro nos dados enviados');}
+      } else {print('Erro no servidor');}
+    } catch (e) {print('Erro na requisicao');}
   }
 
   Future<void> _mensagemDeletarRoubo(idCarro) async {
@@ -155,14 +155,14 @@ class MeusCarrosState extends State<MeusCarros> {
       } else {}
     } catch (e) {}
 
-    atualizarDadosMeusCarros();
+    atualizarDados();
   }
 
   @override
   void initState() {
     super.initState();
 
-    atualizarDadosMeusCarros();
+    atualizarDados();
   }
 
   @override

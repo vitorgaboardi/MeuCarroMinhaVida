@@ -107,8 +107,8 @@ class _MainPage extends State<MainPage> {
 
   void atualizarDados() async {
     try {
-      var url = Uri.parse('http://wadsonpontes.com/meuscarros');
-      var res = await http.post(url, body: {'email': dados['email'], 'roubo': dados['roubo']});
+      var url = Uri.parse('http://wadsonpontes.com/buscardados');
+      var res = await http.post(url, body: {'email': dados['email'], 'roubo': json.encode(dados['roubo'])});
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;
@@ -117,9 +117,9 @@ class _MainPage extends State<MainPage> {
           setState(() {
             dados = r;
           });
-        } else {}
-      } else {}
-    } catch (e) {}
+        } else {print('Erro nos dados enviados');}
+      } else {print('Erro no servidor');}
+    } catch (e) {print('Erro na requisicao');}
   }
 
   @override
@@ -241,6 +241,18 @@ class _SelectedCar extends State<SelectedCar> {
   late CameraDescription camera;
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+
+    availableCameras().then((availableCameras) {
+      cameras = availableCameras;
+      camera = cameras.first;
+    });
+
+    atualizarDados();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -267,6 +279,23 @@ class _SelectedCar extends State<SelectedCar> {
                 builder: (BuildContext context) => Profile(dados: dados)));
       }
     });
+  }
+
+  void atualizarDados() async {
+    try {
+      var url = Uri.parse('http://wadsonpontes.com/buscardados');
+      var res = await http.post(url, body: {'email': dados['email'], 'roubo': json.encode(dados['roubo'])});
+
+      if (res.statusCode == 200) {
+        var r = jsonDecode(res.body) as Map;
+
+        if (r['status'] == 'success') {
+          setState(() {
+            dados = r;
+          });
+        } else {print('Erro nos dados enviados');}
+      } else {print('Erro no servidor');}
+    } catch (e) {print('Erro na requisicao');}
   }
 
   Widget? selecionarImagemRoubo() {

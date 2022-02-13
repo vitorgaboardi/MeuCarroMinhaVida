@@ -158,52 +158,53 @@ class MensagemState extends State<Mensagem> {
       body: SingleChildScrollView(
           controller: scrollController,
           child: Column(children: [
-            for (var i = 0; i < dados['roubo']['qtd_mensagens']; i++)
-              if (dados['roubo']['mensagens'][i]['id_usuario_enviou'] == dados['id_usuario'])
-                Container(
-                  alignment: Alignment.centerRight,
-                  child:Container(
-                    margin: EdgeInsets.fromLTRB(80, 8, 10, 8),
-                    padding: EdgeInsets.fromLTRB(25, 15, 25, 15),
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 162, 89, 255),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        bottomLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
-                      ),
-                    ),
-                    child: Text(
-                        dados['roubo']['mensagens'][i]['mensagem'],
-                        style: TextStyle(
-                            color: Colors.white),
-                    ),
-                  )
-                )
-              else
-                Container(
-                    alignment: Alignment.centerLeft,
-                    child:Container(
-                      margin: EdgeInsets.fromLTRB(10, 8, 80, 8),
-                      padding: EdgeInsets.fromLTRB(25, 15, 25, 15),
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 196, 159, 244),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                          bottomRight: Radius.circular(15),
+                for (var i = 0; i < dados['roubo']['qtd_mensagens']; i++)
+                  if (dados['roubo']['mensagens'][i]['id_usuario_enviou'] == dados['id_usuario'])
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child:Container(
+                        margin: EdgeInsets.fromLTRB(80, 8, 10, 8),
+                        padding: EdgeInsets.fromLTRB(25, 15, 25, 15),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 162, 89, 255),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            bottomLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        dados['roubo']['mensagens'][i]['mensagem'],
-                        style: TextStyle(
-                            color: Colors.black.withOpacity(0.7)),
-                      ),
+                        child: Text(
+                            dados['roubo']['mensagens'][i]['mensagem'],
+                            style: TextStyle(
+                                color: Colors.white),
+                        ),
+                      )
                     )
-                )
-          ])),
+                  else
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        child:Container(
+                          margin: EdgeInsets.fromLTRB(10, 8, 80, 8),
+                          padding: EdgeInsets.fromLTRB(25, 15, 25, 15),
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 196, 159, 244),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              bottomLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                              bottomRight: Radius.circular(15),
+                            ),
+                          ),
+                          child: Text(
+                            dados['roubo']['mensagens'][i]['mensagem'],
+                            style: TextStyle(
+                                color: Colors.black.withOpacity(0.7)),
+                          ),
+                        )
+                    ),
+                    ]),
+          ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // This is all you need!
         items: const <BottomNavigationBarItem>[

@@ -132,6 +132,14 @@ class _Search extends State<Search> {
       cameras = availableCameras;
       camera = cameras.first;
     });
+
+    if (dados['pesquisa'] != null) {
+      setState(() {
+        pesquisaController.text = dados['pesquisa'];
+      });
+
+      pesquisar();
+    }
   }
 
   @override

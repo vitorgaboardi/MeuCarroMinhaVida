@@ -136,7 +136,16 @@ class _Camera extends State<Camera> {
                     // PESQUISAR SE A PLACA placa ESTA DENTRO DO CADASTRO DE CARROS ROUBADOS
                     // SE TIVER, JÁ APARECER O CARD COM AS INFORMAÇÕES PARA ENTRAR EM CONTATO
                     // COM O PROPRIETÁRIO!
+                    setState(() {
+                      dados['pesquisa'] = placa;
+                    });
+
                     Navigator.of(context).pop();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                Search(dados: dados)));
                   },
                 ),
               ],

@@ -117,7 +117,7 @@ class MensagemState extends State<Mensagem> {
 
           scrollController.jumpTo(scrollController.position.maxScrollExtent);
 
-          Timer(Duration(seconds: 1), atualizarDados);
+          Timer(Duration(seconds: 5), atualizarDados);
 
         } else {print('Erro nos dados enviados');}
       } else {print('Erro no servidor');}
@@ -128,6 +128,10 @@ class MensagemState extends State<Mensagem> {
     var mensagem = mensagemController.text;
     var id_usuario_recebeu = dados['roubo']['id_usuario'];
     var id_ok = false;
+
+    if (dados['id_usuario'] is String) {
+      dados['id_usuario'] = int.parse(dados['id_usuario']);
+    }
 
     if (id_usuario_recebeu == dados['id_usuario']) {
       if (dados['roubo']['qtd_mensagens'] > 0) {
@@ -161,7 +165,7 @@ class MensagemState extends State<Mensagem> {
         'mensagem': mensagem,
         'id_roubo': dados['roubo']['id_roubo'],
         'id_usuario_enviou': dados['id_usuario'],
-        'id_usuario_recebeu': dados['roubo']['id_usuario'],
+        'id_usuario_recebeu': id_usuario_recebeu,
       });
 
       if (res.statusCode == 200) {

@@ -133,6 +133,10 @@ class MensagemState extends State<Mensagem> {
       dados['id_usuario'] = int.parse(dados['id_usuario']);
     }
 
+    if (id_usuario_recebeu is String) {
+      id_usuario_recebeu = int.parse(id_usuario_recebeu);
+    }
+
     if (id_usuario_recebeu == dados['id_usuario']) {
       if (dados['roubo']['qtd_mensagens'] > 0) {
         for (var i = 0; i < dados['roubo']['qtd_mensagens']; ++i) {
@@ -165,7 +169,7 @@ class MensagemState extends State<Mensagem> {
         'mensagem': mensagem,
         'id_roubo': dados['roubo']['id_roubo'],
         'id_usuario_enviou': dados['id_usuario'],
-        'id_usuario_recebeu': id_usuario_recebeu,
+        'id_usuario_recebeu': id_usuario_recebeu
       });
 
       if (res.statusCode == 200) {

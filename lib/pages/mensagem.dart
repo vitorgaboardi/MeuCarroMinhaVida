@@ -117,7 +117,7 @@ class MensagemState extends State<Mensagem> {
 
           scrollController.jumpTo(scrollController.position.maxScrollExtent);
 
-          Timer(Duration(seconds: 5), atualizarDados);
+          Timer(Duration(seconds: 1), atualizarDados);
 
         } else {print('Erro nos dados enviados');}
       } else {print('Erro no servidor');}
@@ -126,6 +126,32 @@ class MensagemState extends State<Mensagem> {
 
   void enviarMensagem() async {
     var mensagem = mensagemController.text;
+    var id_usuario_recebeu = dados['roubo']['id_usuario'];
+    var id_ok = false;
+
+    if (id_usuario_recebeu == dados['id_usuario']) {
+      if (dados['roubo']['qtd_mensagens'] > 0) {
+        for (var i = 0; i < dados['roubo']['qtd_mensagens']; ++i) {
+          if (dados['roubo']['mensagens'][i]['id_usuario_enviou'] != dados['id_usuario']) {
+            id_usuario_recebeu = dados['roubo']['mensagens'][i]['id_usuario_enviou'];
+            id_ok = true;
+            break;
+          }
+          if (dados['roubo']['mensagens'][i]['id_usuario_recebeu'] != dados['id_usuario']) {
+            id_usuario_recebeu = dados['roubo']['mensagens'][i]['id_usuario_recebeu'];
+            id_ok = true;
+            break;
+          }
+        }
+      }
+    }
+    else {
+      id_ok = true;
+    }
+
+    if (id_ok == false) {
+      id_usuario_recebeu = null;
+    }
 
     try {
       var url = Uri.parse('http://wadsonpontes.com/mensagem');

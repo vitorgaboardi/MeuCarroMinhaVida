@@ -271,7 +271,7 @@ class MensagemState extends State<Mensagem> {
                             controller: mensagemController,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Digite a placa do carro',
+                              labelText: 'Mensagem',
                             ),
                           )
                       ),

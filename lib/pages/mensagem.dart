@@ -129,14 +129,6 @@ class MensagemState extends State<Mensagem> {
     var id_usuario_recebeu = dados['roubo']['id_usuario'];
     var id_ok = false;
 
-    if (dados['id_usuario'] is String) {
-      dados['id_usuario'] = int.parse(dados['id_usuario']);
-    }
-
-    if (id_usuario_recebeu is String) {
-      id_usuario_recebeu = int.parse(id_usuario_recebeu);
-    }
-
     if (id_usuario_recebeu == dados['id_usuario']) {
       if (dados['roubo']['qtd_mensagens'] > 0) {
         for (var i = 0; i < dados['roubo']['qtd_mensagens']; ++i) {
@@ -158,7 +150,7 @@ class MensagemState extends State<Mensagem> {
     }
 
     if (id_ok == false) {
-      id_usuario_recebeu = null;
+      id_usuario_recebeu = 0;
     }
 
     try {

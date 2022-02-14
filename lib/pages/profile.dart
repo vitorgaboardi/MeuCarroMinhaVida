@@ -12,6 +12,7 @@ import 'home.dart';
 import 'main.dart';
 import 'pesquisa.dart';
 import 'camera.dart';
+import 'informacao_pessoal.dart';
 import 'registro_carro.dart';
 import 'meus_carros.dart';
 
@@ -100,6 +101,13 @@ class _Profile extends State<Profile> {
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => RegistroCarro(dados: dados)));
+  }
+
+  void _personalinfo() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => Info(dados: dados)));
   }
 
   void _home() {
@@ -294,7 +302,7 @@ class _Profile extends State<Profile> {
                     child: Container(
                         padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
                         child: ElevatedButton(
-                            onPressed: null, // criar aqui minhas informações
+                            onPressed: _personalinfo,
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.white), // background
@@ -307,7 +315,7 @@ class _Profile extends State<Profile> {
                                         side: BorderSide(
                                             color: Color.fromARGB(
                                                 255, 162, 89, 255))))),
-                            child: Text('MINHAS INFORMAÇÕES',
+                            child: Text('INFORMAÇÕES PESSOAIS',
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 162, 89, 255),
                                   fontSize: 16,

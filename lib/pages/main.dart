@@ -108,7 +108,10 @@ class _MainPage extends State<MainPage> {
   void atualizarDados() async {
     try {
       var url = Uri.parse('http://wadsonpontes.com/buscardados');
-      var res = await http.post(url, body: {'email': dados['email'], 'roubo': json.encode(dados['roubo'])});
+      var res = await http.post(url, body: {
+        'email': dados['email'],
+        'roubo': json.encode(dados['roubo'])
+      });
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;
@@ -117,9 +120,15 @@ class _MainPage extends State<MainPage> {
           setState(() {
             dados = r;
           });
-        } else {print('Erro nos dados enviados');}
-      } else {print('Erro no servidor');}
-    } catch (e) {print('Erro na requisicao');}
+        } else {
+          print('Erro nos dados enviados');
+        }
+      } else {
+        print('Erro no servidor');
+      }
+    } catch (e) {
+      print('Erro na requisicao');
+    }
   }
 
   @override
@@ -172,11 +181,13 @@ class _MainPage extends State<MainPage> {
                       Image.network(
                         'http://wadsonpontes.com/' +
                             dados['roubos'][i]['imagem'],
-                        width: 200,
-                        height: 100,
+                        //width: 200,
+                        //height: 100,
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                        padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+
+                        /*
                         child: Text(
                           'Data do Furto: ' +
                               dados['roubos'][i]['data'] +
@@ -186,6 +197,7 @@ class _MainPage extends State<MainPage> {
                               TextStyle(color: Colors.black.withOpacity(0.6)),
                           textAlign: TextAlign.start,
                         ),
+                        */
                       ),
                     ],
                   ))),
@@ -284,7 +296,10 @@ class _SelectedCar extends State<SelectedCar> {
   void atualizarDados() async {
     try {
       var url = Uri.parse('http://wadsonpontes.com/buscardados');
-      var res = await http.post(url, body: {'email': dados['email'], 'roubo': json.encode(dados['roubo'])});
+      var res = await http.post(url, body: {
+        'email': dados['email'],
+        'roubo': json.encode(dados['roubo'])
+      });
 
       if (res.statusCode == 200) {
         var r = jsonDecode(res.body) as Map;
@@ -293,9 +308,15 @@ class _SelectedCar extends State<SelectedCar> {
           setState(() {
             dados = r;
           });
-        } else {print('Erro nos dados enviados');}
-      } else {print('Erro no servidor');}
-    } catch (e) {print('Erro na requisicao');}
+        } else {
+          print('Erro nos dados enviados');
+        }
+      } else {
+        print('Erro no servidor');
+      }
+    } catch (e) {
+      print('Erro na requisicao');
+    }
   }
 
   Widget? selecionarImagemRoubo() {

@@ -28,6 +28,7 @@ class MensagemState extends State<Mensagem> {
 
   var dados;
   final ScrollController scrollController = ScrollController();
+  TextEditingController mensagemController = TextEditingController();
   late List<CameraDescription> cameras;
   late CameraDescription camera;
   int _selectedIndex = 3;
@@ -116,7 +117,34 @@ class MensagemState extends State<Mensagem> {
 
           scrollController.jumpTo(scrollController.position.maxScrollExtent);
 
-          //Timer(Duration(seconds: 5), atualizarDados);
+          Timer(Duration(seconds: 5), atualizarDados);
+
+        } else {print('Erro nos dados enviados');}
+      } else {print('Erro no servidor');}
+    } catch (e) {print('Erro na requisicao');}
+  }
+
+  void enviarMensagem() async {
+    var mensagem = mensagemController.text;
+
+    try {
+      var url = Uri.parse('http://wadsonpontes.com/mensagem');
+      var res = await http.post(url, body: {
+        'email': dados['email'],
+        'roubo': json.encode(dados['roubo']),
+        'mensagem': mensagem,
+        'id_roubo': dados['roubo']['id_roubo'],
+        'id_usuario_enviou': dados['id_usuario'],
+        'id_usuario_recebeu': dados['roubo']['id_usuario'],
+      });
+
+      if (res.statusCode == 200) {
+        var r = jsonDecode(res.body) as Map;
+
+        if (r['status'] == 'success') {
+          mensagemController.text = '';
+
+          atualizarDados();
 
         } else {print('Erro nos dados enviados');}
       } else {print('Erro no servidor');}
@@ -131,6 +159,10 @@ class MensagemState extends State<Mensagem> {
       cameras = availableCameras;
       camera = cameras.first;
     });
+
+    if (dados['roubo']['qtd_mensagens'] is String) {
+      dados['roubo']['qtd_mensagens'] = int.parse(dados['roubo']['qtd_mensagens']);
+    }
 
     atualizarDados();
   }
@@ -203,6 +235,28 @@ class MensagemState extends State<Mensagem> {
                           ),
                         )
                     ),
+            Container(
+              height: 80,
+                padding: EdgeInsets.fromLTRB(10, 20, 0, 10),
+                child: Row(
+                    children: [
+                      Expanded(
+                          child:TextField(
+                            controller: mensagemController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Digite a placa do carro',
+                            ),
+                          )
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.send),
+                        iconSize: 40,
+                        color: Color.fromARGB(255, 162, 89, 255),
+                        onPressed: enviarMensagem,
+                      ),
+                    ]
+                )),
                     ]),
           ),
       bottomNavigationBar: BottomNavigationBar(
